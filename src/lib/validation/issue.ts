@@ -13,11 +13,11 @@ export const ISSUE_PRIORITIES = ["low", "medium", "high", "critical"] as const;
 
 export const ISSUE_STATUS_LABELS: Record<(typeof ISSUE_STATUSES)[number], string> = {
   new: "신규",
-  reviewing: "검토중",
-  tracked: "추적중",
+  reviewing: "검토 중",
+  tracked: "추적 중",
   ready_to_publish: "발행 대기",
   published: "발행됨",
-  archived: "보관",
+  archived: "보관됨",
 };
 
 export const ISSUE_PRIORITY_LABELS: Record<(typeof ISSUE_PRIORITIES)[number], string> = {

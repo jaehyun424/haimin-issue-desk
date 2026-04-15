@@ -38,7 +38,7 @@ export default async function ActivityTimelinePage() {
       {rows.length === 0 ? (
         <EmptyState
           title="공식 활동 데이터를 동기화하고 있습니다"
-          description="국회 Open API 연동과 의원실 수기 입력이 반영되면 이 페이지에 자동으로 표시됩니다."
+          description="국회 공식 자료 연동과 의원실 수기 입력이 반영되면 이 페이지에 자동으로 표시됩니다."
         />
       ) : (
         <section>

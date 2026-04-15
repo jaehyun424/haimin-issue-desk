@@ -68,7 +68,7 @@ export function BriefForm({ mode, issueId, initial }: Props) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="brief-body">본문 (Markdown)</Label>
+        <Label htmlFor="brief-body">본문</Label>
         <Textarea
           id="brief-body"
           name="bodyMd"
@@ -78,7 +78,8 @@ export function BriefForm({ mode, issueId, initial }: Props) {
           className="font-mono text-sm"
         />
         <p className="text-xs text-muted-foreground">
-          지원: 헤더(#/##/###), 리스트, 인용, 굵게/기울임, 링크. 이미지·HTML 은 지원하지 않습니다.
+          사용 가능: 제목(#·##·###), 목록, 인용, 굵게/기울임, 링크. 이미지·HTML은 사용할
+          수 없습니다.
         </p>
       </div>
 

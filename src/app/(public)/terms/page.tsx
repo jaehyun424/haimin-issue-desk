@@ -40,7 +40,7 @@ export default function TermsPage() {
           >
             haimin.office@assembly.go.kr
           </a>
-          <span className="text-muted-foreground"> (운영 준비 중)</span> 로 접수합니다.
+          로 접수합니다.
         </p>
       </section>
     </article>

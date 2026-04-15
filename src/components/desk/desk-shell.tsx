@@ -47,7 +47,7 @@ export function DeskShell({
 
   return (
     <div className="min-h-dvh bg-muted/20">
-      {/* 모바일 상단 바 — 햄버거 + Desk 만. 심플하게. */}
+      {/* 모바일 상단 바 — 햄버거 + 타이틀. 심플하게. */}
       <div className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-border bg-background px-4 md:hidden">
         <button
           type="button"
@@ -59,7 +59,7 @@ export function DeskShell({
         >
           {open ? <X className="h-4 w-4" aria-hidden /> : <Menu className="h-4 w-4" aria-hidden />}
         </button>
-        <span className="text-sm font-semibold text-foreground">Desk</span>
+        <span className="text-sm font-semibold text-foreground">이슈 데스크</span>
         <span className="w-9" aria-hidden />
       </div>
 
@@ -86,7 +86,7 @@ export function DeskShell({
               id="desk-mobile-drawer"
               role="dialog"
               aria-modal="true"
-              aria-label="Desk 메뉴"
+              aria-label="이슈 데스크 메뉴"
               className="fixed inset-y-0 left-0 z-50 max-w-[85vw] md:hidden"
             >
               <DeskSidebar

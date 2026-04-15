@@ -115,9 +115,11 @@ export default async function BriefDetailPage({ params }: Props) {
         <ul className="space-y-1 text-sm text-muted-foreground">
           <li>· 사실형 제목인지 (자극적 수사 ❌)</li>
           <li>· 요약 3줄 이내로 이슈 핵심 설명</li>
-          <li>· 본문 5단락 구조: 개요 → 현재 상황 → 의원실 활동 → 관련 법안/회의 → 참고자료</li>
+          <li>
+            · 본문 4섹션 구조: 이슈 개요 → 현재 상황 → 의원실 관련 활동 → 관련 법안·회의
+          </li>
           <li>· 연결 출처 최소 1건 이상 ({count ?? 0}건 연결됨)</li>
-          <li>· 발행 전 reviewer 검토 (선거모드 켜짐 시 필수)</li>
+          <li>· 발행 전 검토자 확인 (발행 안전모드 켜짐 시 필수)</li>
         </ul>
       </Section>
     </div>

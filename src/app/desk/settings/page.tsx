@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/lib/db";
 import { issueCategories, featureFlags, users } from "@/lib/db/schema";
 import { requireDeskSession } from "@/lib/auth/session";
+import { ROLE_LABELS } from "@/lib/constants/roles";
 import { getAllFlags } from "@/lib/feature-flags";
 import { defaultFlagSeeds } from "@/lib/constants/feature-flags";
 import { FlagToggle } from "./flag-toggle";
@@ -134,7 +135,7 @@ export default async function DeskSettingsPage() {
       </section>
 
       <p className="text-xs text-muted-foreground">
-        로그인: {session.user.email} · 역할: {session.user.role}
+        로그인: {session.user.email} · 역할: {ROLE_LABELS[session.user.role]}
       </p>
     </div>
   );

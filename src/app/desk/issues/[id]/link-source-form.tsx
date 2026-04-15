@@ -20,7 +20,7 @@ export function LinkSourceForm({ issueId }: { issueId: string }) {
           id="sourceDocumentId"
           name="sourceDocumentId"
           required
-          placeholder="UUID"
+          placeholder="수집 문서 ID"
           className="font-mono text-xs"
         />
       </div>

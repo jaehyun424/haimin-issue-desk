@@ -53,7 +53,7 @@ export default async function DeskBriefsPage({ searchParams }: Props) {
         <p className="kicker">브리프 관리</p>
         <h1 className="mt-2">브리프 관리</h1>
         <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-          초안 → 검토 → 발행 단계로 관리합니다. 발행은 reviewer 권한이 필요합니다.
+          초안 → 검토 → 발행 단계로 관리합니다. 발행은 검토자 권한이 필요합니다.
         </p>
       </header>
 

@@ -17,6 +17,7 @@ import {
   users,
 } from "@/lib/db/schema";
 import { requireDeskSession } from "@/lib/auth/session";
+import { ROLE_LABELS } from "@/lib/constants/roles";
 import { formatKoreanDateTime } from "@/lib/utils";
 import { IssueForm } from "../issue-form";
 import { LinkSourceForm } from "./link-source-form";
@@ -209,7 +210,7 @@ export default async function IssueDetailPage({ params }: Props) {
       </section>
 
       <p className="text-xs text-muted-foreground">
-        로그인: {session.user.email} · 역할: {session.user.role}
+        로그인: {session.user.email} · 역할: {ROLE_LABELS[session.user.role]}
       </p>
     </div>
   );

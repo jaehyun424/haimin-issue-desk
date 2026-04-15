@@ -183,7 +183,7 @@ export default async function HomePage() {
           <div>
             <dt className="eyebrow">01. 출처 우선</dt>
             <dd className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              국회·정부 Open API 와 유관기관 보고서를 주요 출처로 사용합니다.
+              국회·정부의 공식 자료 연동과 유관기관 보고서를 주요 출처로 사용합니다.
             </dd>
           </div>
           <div>

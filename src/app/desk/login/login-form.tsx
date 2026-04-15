@@ -10,10 +10,9 @@ import { loginSchema } from "@/lib/validation/auth";
 
 export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
   const router = useRouter();
-  // 데모 seed 계정 참고: admin@haimin.local / admin1234 (필요 시 수동 입력).
-  // 운영 자격 증명은 prefill 하지 않는다.
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // 데모 seed 관리자 자격 증명을 prefill. 운영 전환 시 교체 예정.
+  const [email, setEmail] = useState("admin@haimin.local");
+  const [password, setPassword] = useState("admin1234");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 

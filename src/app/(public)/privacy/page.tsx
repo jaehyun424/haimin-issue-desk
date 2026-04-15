@@ -79,8 +79,7 @@ export default function PrivacyPage() {
             className="underline underline-offset-4"
           >
             haimin.office@assembly.go.kr
-          </a>{" "}
-          <span className="text-muted-foreground">(운영 준비 중)</span>
+          </a>
         </p>
       </section>
     </article>

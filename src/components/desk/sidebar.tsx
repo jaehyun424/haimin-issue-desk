@@ -63,11 +63,11 @@ export function DeskSidebar({
       {/* 상단 타이틀 */}
       <div className="flex h-14 flex-none items-center gap-2 border-b border-border px-4">
         <Flag className="h-5 w-5 text-primary" aria-hidden />
-        <span className="text-sm font-semibold">Desk</span>
+        <span className="text-sm font-semibold">이슈 데스크</span>
       </div>
 
       {/* 메뉴 */}
-      <nav aria-label="Desk 메뉴" className="flex-1 overflow-y-auto p-2">
+      <nav aria-label="이슈 데스크 메뉴" className="flex-1 overflow-y-auto p-2">
         <ul className="space-y-0.5">
           {items.map((item) => {
             const Icon = item.icon;

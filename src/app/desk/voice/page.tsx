@@ -24,7 +24,7 @@ import {
 } from "@/lib/validation/voice";
 import { VoiceStatusForm } from "./status-form";
 
-export const metadata = { title: "의견 접수 Triage" };
+export const metadata = { title: "의견 검토" };
 
 interface Props {
   searchParams: Promise<{ status?: string }>;
@@ -61,10 +61,11 @@ export default async function DeskVoicePage({ searchParams }: Props) {
     <div className="space-y-8">
       <header className="flex flex-col gap-3 border-b border-border pb-6 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="kicker">Voice Triage</p>
-          <h1 className="mt-2">의견 접수 Triage</h1>
+          <p className="kicker">의견 접수</p>
+          <h1 className="mt-2">접수 의견 검토</h1>
           <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-            시민 의견을 분류하고 이슈와 연결합니다. 외부 공개는 금지됩니다.
+            접수된 의견을 분류하고 필요한 경우 이슈에 연결합니다. 의견 원문은 외부에
+            공개되지 않습니다.
           </p>
         </div>
         <Badge variant={enabled ? "success" : "outline"} className="self-start">

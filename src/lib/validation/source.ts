@@ -4,9 +4,9 @@ import { requiredString, trimmedString, uuid } from "./common";
 export const SOURCE_TYPES = ["assembly_api", "news_api", "rss", "manual"] as const;
 
 export const SOURCE_TYPE_LABELS: Record<(typeof SOURCE_TYPES)[number], string> = {
-  assembly_api: "국회 API",
-  news_api: "뉴스 API",
-  rss: "RSS",
+  assembly_api: "국회 공식 자료",
+  news_api: "뉴스 자료",
+  rss: "기관 피드",
   manual: "편집 등록",
 };
 

@@ -5,9 +5,9 @@ export const BRIEF_STATUSES = ["draft", "review", "published", "archived"] as co
 
 export const BRIEF_STATUS_LABELS: Record<(typeof BRIEF_STATUSES)[number], string> = {
   draft: "초안",
-  review: "검토",
+  review: "검토 중",
   published: "발행됨",
-  archived: "보관",
+  archived: "보관됨",
 };
 
 export const briefCreateSchema = z.object({

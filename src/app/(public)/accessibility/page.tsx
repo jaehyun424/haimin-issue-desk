@@ -45,8 +45,7 @@ export default function AccessibilityPage() {
           >
             haimin.office@assembly.go.kr
           </a>
-          <span className="text-muted-foreground"> (운영 준비 중)</span> 로 알려 주시면
-          검토 후 개선합니다.
+          로 알려 주시면 검토 후 개선합니다.
         </p>
       </section>
     </article>

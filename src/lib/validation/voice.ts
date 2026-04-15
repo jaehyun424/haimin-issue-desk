@@ -26,7 +26,7 @@ export const VOICE_STATUSES = ["new", "screened", "closed"] as const;
 
 export const VOICE_STATUS_LABELS: Record<(typeof VOICE_STATUSES)[number], string> = {
   new: "미분류",
-  screened: "검토됨",
+  screened: "검토 완료",
   closed: "종결",
 };
 

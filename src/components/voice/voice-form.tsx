@@ -45,15 +45,11 @@ export function VoiceForm({
         제목, 내용, 개인정보 수집·이용 동의입니다.
       </p>
 
-      {/* 의견 유형 — 2x2 그리드. 앞 2장은 제출 가능(라디오), 뒤 2장은 안내 전용. */}
+      {/* 제출 유형 — 제출 가능한 2개만 라디오 카드로 노출 */}
       <fieldset className="space-y-3">
         <legend className="text-sm font-semibold text-foreground">
-          의견 유형 <span aria-hidden>*</span>
+          제출 유형 <span aria-hidden>*</span>
         </legend>
-        <p className="text-xs text-muted-foreground">
-          제출 가능한 유형을 선택해 주세요. 개인 민원·협업 요청은 안내를 참고해 직접
-          연락 바랍니다.
-        </p>
         <div className="grid gap-2 md:grid-cols-2">
           {FORM_VOICE_TYPES.map((t) => (
             <label
@@ -77,61 +73,31 @@ export function VoiceForm({
               </span>
             </label>
           ))}
-
-          <div
-            aria-label="개인 민원 안내"
-            className="flex items-start gap-3 rounded border border-dashed border-border bg-muted/40 p-3 text-sm"
-          >
-            <span className="min-w-0 flex-1">
-              <span className="flex items-center gap-2">
-                <span className="block font-medium text-muted-foreground">
-                  개인 민원
-                </span>
-                <span className="rounded bg-background px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-                  안내
-                </span>
-              </span>
-              <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
-                개인 피해·불편은 이 창구가 아닙니다.{" "}
-                <a
-                  href="https://epeople.go.kr"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="underline underline-offset-4"
-                >
-                  국민신문고
-                </a>{" "}
-                등 공식 민원 채널을 이용해 주세요. (별도 안내 참조)
-              </span>
-            </span>
-          </div>
-
-          <div
-            aria-label="협업·인터뷰·자료 전달 안내"
-            className="flex items-start gap-3 rounded border border-dashed border-border bg-muted/40 p-3 text-sm"
-          >
-            <span className="min-w-0 flex-1">
-              <span className="flex items-center gap-2">
-                <span className="block font-medium text-muted-foreground">
-                  협업·인터뷰·자료 전달
-                </span>
-                <span className="rounded bg-background px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
-                  안내
-                </span>
-              </span>
-              <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
-                언론·기관·단체 문의는 이메일로 직접 연락 주세요:{" "}
-                <a
-                  href="mailto:haimin.office@assembly.go.kr"
-                  className="underline underline-offset-4"
-                >
-                  haimin.office@assembly.go.kr
-                </a>{" "}
-                (운영 준비 중)
-              </span>
-            </span>
-          </div>
         </div>
+        <ul className="space-y-1 pl-0.5 text-xs text-muted-foreground">
+          <li>
+            개인 민원은{" "}
+            <a
+              href="https://epeople.go.kr"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="underline underline-offset-4"
+            >
+              국민신문고
+            </a>
+            를 이용해 주세요.
+          </li>
+          <li>
+            협업·인터뷰·자료 전달은 의원실 이메일{" "}
+            <a
+              href="mailto:haimin.office@assembly.go.kr"
+              className="underline underline-offset-4"
+            >
+              haimin.office@assembly.go.kr
+            </a>
+            로 연락해 주세요.
+          </li>
+        </ul>
       </fieldset>
 
       {/* 관련 분야 */}

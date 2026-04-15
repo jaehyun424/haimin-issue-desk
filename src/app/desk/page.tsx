@@ -8,9 +8,10 @@ import { IssueStatusBadge } from "@/components/common/status-badge";
 import { db } from "@/lib/db";
 import { briefs, issues, sourceDocuments } from "@/lib/db/schema";
 import { requireDeskSession } from "@/lib/auth/session";
+import { ROLE_LABELS } from "@/lib/constants/roles";
 import { formatKoreanDate, formatKoreanDateTime } from "@/lib/utils";
 
-export const metadata = { title: "Desk 대시보드" };
+export const metadata = { title: "관리 대시보드" };
 
 export default async function DeskHome() {
   const session = await requireDeskSession();
@@ -73,7 +74,7 @@ export default async function DeskHome() {
     {
       label: "발행 대기 브리프",
       value: readyBriefs,
-      hint: "reviewer 승인 대기",
+      hint: "검토자 승인 대기",
       href: "/desk/briefs?status=review",
     },
   ];
@@ -82,10 +83,11 @@ export default async function DeskHome() {
     <div className="space-y-10">
       <header className="flex flex-wrap items-end justify-between gap-3 border-b border-border pb-6">
         <div>
-          <p className="kicker">데스크</p>
+          <p className="kicker">관리 대시보드</p>
           <h1 className="mt-2">대시보드</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {formatKoreanDate(now)} · {session.user.name || "담당자"}님 ({session.user.role})
+            {formatKoreanDate(now)} · {session.user.name || "담당자"}님 (
+            {ROLE_LABELS[session.user.role]})
           </p>
         </div>
         <Button asChild>

@@ -32,7 +32,8 @@ export function checkPublishable(input: PublishInputs): PublishCheck {
     return {
       ok: false,
       code: "must_review_first",
-      message: "선거모드 동안에는 reviewer 검토(review 상태)를 거쳐야 발행할 수 있습니다.",
+      message:
+        "발행 안전모드에서는 검토자 확인(검토 상태)을 거쳐야 발행할 수 있습니다.",
     };
   }
   return { ok: true };

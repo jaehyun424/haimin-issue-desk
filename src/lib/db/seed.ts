@@ -9,6 +9,10 @@
  *  - seed 계정의 비밀번호는 반드시 로그인 후 즉시 변경.
  *  - TOTP 추가 예정 (v1.5).
  */
+import { config as loadEnv } from "dotenv";
+loadEnv({ path: ".env.local" });
+loadEnv({ path: ".env" });
+
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { INITIAL_CATEGORIES } from "../constants/categories";

@@ -1,4 +1,9 @@
 import { defineConfig } from "drizzle-kit";
+import { config as loadEnv } from "dotenv";
+
+// .env.local 우선, 없으면 .env
+loadEnv({ path: ".env.local" });
+loadEnv({ path: ".env" });
 
 const url = process.env.DATABASE_URL;
 

@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 215 28% 17%;
+    --card: 0 0% 100%;
+    --card-foreground: 215 28% 17%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 28% 17%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 215 16% 95%;
+    --secondary-foreground: 215 28% 17%;
+    --muted: 215 16% 95%;
+    --muted-foreground: 215 14% 45%;
+    --accent: 215 16% 95%;
+    --accent-foreground: 215 28% 17%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 215 16% 88%;
+    --input: 215 16% 88%;
+    --ring: 221 83% 53%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 215 28% 9%;
+    --foreground: 0 0% 98%;
+    --card: 215 28% 12%;
+    --card-foreground: 0 0% 98%;
+    --popover: 215 28% 12%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 221 83% 63%;
+    --primary-foreground: 215 28% 9%;
+    --secondary: 215 20% 20%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 215 20% 20%;
+    --muted-foreground: 215 14% 70%;
+    --accent: 215 20% 20%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 215 20% 20%;
+    --input: 215 20% 20%;
+    --ring: 221 83% 63%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss03", "cv02";
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+}
+
+/* Pretendard — 실제 font file 은 빌드 시 CDN link 로 제공 */
+@layer base {
+  h1, h2, h3, h4 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+/* 관공서스럽지 않은 공공 톤: 미묘한 라인 카드 */
+.card-line {
+  @apply rounded-lg border border-border bg-card;
+}
+
+/* Brief markdown 렌더 */
+.prose-brief {
+  @apply text-[17px] leading-[1.8] text-foreground;
+}
+.prose-brief h2 {
+  @apply mt-10 mb-4 text-2xl font-semibold;
+}
+.prose-brief h3 {
+  @apply mt-8 mb-3 text-xl font-semibold;
+}
+.prose-brief p {
+  @apply my-4;
+}
+.prose-brief ul {
+  @apply my-4 list-disc space-y-2 pl-6;
+}
+.prose-brief ol {
+  @apply my-4 list-decimal space-y-2 pl-6;
+}
+.prose-brief a {
+  @apply text-primary underline underline-offset-4;
+}
+.prose-brief blockquote {
+  @apply my-4 border-l-4 border-primary/60 bg-muted/40 p-4 text-muted-foreground;
+}

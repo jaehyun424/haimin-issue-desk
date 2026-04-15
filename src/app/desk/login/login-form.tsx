@@ -17,7 +17,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
 
   return (
     <form
-      className="space-y-4"
+      className="space-y-5"
       onSubmit={(e) => {
         e.preventDefault();
         setError(null);
@@ -42,30 +42,36 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
         });
       }}
     >
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         <Label htmlFor="email">이메일</Label>
         <Input
           id="email"
           type="email"
           autoComplete="email"
           required
+          placeholder="name@haimin.kr"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         <Label htmlFor="password">비밀번호</Label>
         <Input
           id="password"
           type="password"
           autoComplete="current-password"
           required
+          placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
-      <Button type="submit" className="w-full" disabled={pending}>
+      {error ? (
+        <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          {error}
+        </p>
+      ) : null}
+      <Button type="submit" size="lg" className="w-full shadow-soft" disabled={pending}>
         {pending ? "로그인 중…" : "로그인"}
       </Button>
     </form>

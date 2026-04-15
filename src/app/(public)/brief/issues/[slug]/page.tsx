@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ChevronLeft } from "lucide-react";
 import { and, desc, eq } from "drizzle-orm";
 import { Badge } from "@/components/ui/badge";
 import { FreshnessIndicator } from "@/components/common/freshness-indicator";
@@ -15,16 +17,12 @@ import {
 import { formatKoreanDateTime } from "@/lib/utils";
 import { renderMarkdown } from "@/lib/markdown";
 
-export const revalidate = 600;
+export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-/**
- * Next.js 15 는 dynamic 세그먼트를 URL-디코드하지 않는다.
- * 한글 슬러그를 DB에 저장해 두었으므로 %-인코드 값을 받아 디코드한 뒤 비교한다.
- */
 function decodeSlug(raw: string): string {
   try {
     return decodeURIComponent(raw);
@@ -87,10 +85,24 @@ export default async function BriefDetailPage({ params }: Props) {
   const rendered = renderMarkdown(brief.bodyMd);
 
   return (
-    <article className="mx-auto max-w-3xl space-y-8">
-      <header className="space-y-3">
+    <article className="mx-auto max-w-3xl space-y-10">
+      <nav className="text-sm">
+        <Link
+          href="/brief"
+          className="inline-flex items-center gap-1 text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ChevronLeft className="h-4 w-4" aria-hidden />
+          브리프 목록
+        </Link>
+      </nav>
+
+      <header className="space-y-4 border-b border-border pb-8">
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-          {brief.categoryName ? <Badge variant="outline">{brief.categoryName}</Badge> : null}
+          {brief.categoryName ? (
+            <Badge variant="outline" className="font-medium">
+              {brief.categoryName}
+            </Badge>
+          ) : null}
           <FreshnessIndicator label="발행" value={brief.publishedAt} />
           {brief.lastVerifiedAt ? (
             <FreshnessIndicator
@@ -100,10 +112,16 @@ export default async function BriefDetailPage({ params }: Props) {
             />
           ) : null}
           <span aria-hidden>·</span>
-          <span>출처 {sources.length}건</span>
+          <span>
+            출처 <span className="font-semibold text-foreground">{sources.length}</span>건
+          </span>
         </div>
-        <h1 className="text-3xl font-semibold tracking-tight">{brief.title}</h1>
-        <p className="text-lg text-muted-foreground">{brief.summary}</p>
+        <h1 className="text-balance text-[2.25rem] font-semibold leading-[1.25] tracking-tight sm:text-4xl">
+          {brief.title}
+        </h1>
+        <p className="text-[17px] leading-relaxed text-muted-foreground">
+          {brief.summary}
+        </p>
       </header>
 
       <div
@@ -112,14 +130,20 @@ export default async function BriefDetailPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: rendered }}
       />
 
-      <Section title="참고한 출처">
-        <SourceList items={sources} />
+      <Section title="참고한 출처" description="공식·준공식 자료를 우선 배치했습니다.">
+        <div className="card-line p-6">
+          <SourceList items={sources} />
+        </div>
       </Section>
 
-      <p className="text-xs text-muted-foreground">
-        본 브리프는 공식 자료를 기반으로 의원실이 정리한 것이며, 마지막 검증 시각 이후 사실관계는
-        변동될 수 있습니다. 마지막 검증: {formatKoreanDateTime(brief.lastVerifiedAt ?? brief.publishedAt)}.
-      </p>
+      <footer className="rounded-xl border border-border bg-muted/30 p-5 text-sm text-muted-foreground">
+        본 브리프는 공식 자료를 기반으로 의원실이 정리한 것이며, 마지막 검증 시각 이후
+        사실관계는 변동될 수 있습니다. 마지막 검증:{" "}
+        <span className="font-medium text-foreground">
+          {formatKoreanDateTime(brief.lastVerifiedAt ?? brief.publishedAt)}
+        </span>
+        . 오기·정정 요청은 의원실 공식 이메일로 받습니다.
+      </footer>
     </article>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
-import { BRIEF_STATUSES, BRIEF_STATUS_LABELS } from "@/lib/validation/brief";
+import { type BRIEF_STATUSES, BRIEF_STATUS_LABELS } from "@/lib/validation/brief";
 import { canDo, type Role } from "@/lib/constants/roles";
 import { transitionBriefAction } from "../actions";
 

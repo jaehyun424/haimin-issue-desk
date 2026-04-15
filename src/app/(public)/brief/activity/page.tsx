@@ -7,7 +7,7 @@ import { memberActivities } from "@/lib/db/schema";
 import { formatKoreanDate, relativeFromNow } from "@/lib/utils";
 
 export const metadata = { title: "의정활동 타임라인" };
-export const revalidate = 600;
+export const dynamic = "force-dynamic";
 
 const TYPE_LABELS: Record<string, string> = {
   bill: "발의안",

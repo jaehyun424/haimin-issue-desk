@@ -110,12 +110,47 @@ DB 값이 있으면 DB 값을, 없으면 env 기본값을 사용한다.
 ## DB
 
 ```
-npm run db:generate    # 스키마 diff → SQL 마이그레이션 생성
-npm run db:push        # 개발용: schema 바로 반영
-npm run db:migrate     # 운영용: 생성된 SQL 적용
-npm run db:seed        # 카테고리 / flags / seed 계정
-npm run db:studio      # Drizzle Studio
+npm run db:generate      # 스키마 diff → SQL 마이그레이션 생성
+npm run db:push          # 개발용: schema 바로 반영 (대화형)
+npm run db:migrate       # 운영용: 생성된 SQL 적용 (비대화형)
+npm run db:seed          # 카테고리 / flags / admin·editor seed 계정
+npm run db:seed:sample   # 샘플 이슈·출처·브리프 3세트 (데모용)
+npm run db:studio        # Drizzle Studio
 ```
+
+## Vercel 배포
+
+이 앱은 Vercel Seoul(`icn1`) 리전 + 국내 PostgreSQL 조합을 기준으로 설계했다.
+
+### 환경변수 체크리스트
+
+| key | 스코프 | 필수 | 설명 |
+| --- | --- | --- | --- |
+| `DATABASE_URL` | Production / Preview | ✅ | 국내 PG16 연결 URL (`postgres://user:pw@host:5432/db?sslmode=require`) |
+| `AUTH_SECRET` | Production / Preview | ✅ | `openssl rand -base64 32` 로 환경별 생성 |
+| `AUTH_TRUST_HOST` | Production / Preview | ✅ | Vercel 뒤에서 `"true"` 고정 |
+| `NEXT_PUBLIC_APP_URL` | Production / Preview | ✅ | 공개 도메인 (커스텀 `.kr` 권장) |
+| `APP_ENV` | 모두 | ✅ | `local`/`staging`/`production` 중 하나 |
+| `SEED_ADMIN_EMAIL` · `SEED_ADMIN_PASSWORD` | 초기 1회 | ⚠ | seed 실행 시점에만 사용. 이후 env 에서 제거 권장 |
+| `SEED_EDITOR_EMAIL` · `SEED_EDITOR_PASSWORD` | 초기 1회 | ⚠ | 동일 |
+| `FEATURE_VOICE_DEFAULT` / `FEATURE_ELECTION_MODE_DEFAULT` / `FEATURE_AI_DEFAULT` | 모두 | ❌ | DB flag 미존재 시 fallback 값. v1 배포는 기본값 유지 |
+| `ASSEMBLY_API_KEY` / `DATA_GO_KR_SERVICE_KEY` / `NAVER_CLIENT_ID` / `NAVER_CLIENT_SECRET` | 수집기 활성화 시 | ❌ | 수집 파이프라인 연결 후 활성화 |
+| `ANTHROPIC_API_KEY` | AI 사용 시 | ❌ | `ai_enabled=true` 이후에 설정 |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` | voice ON 시 | ❌ | `voice_enabled=true` 전에 설정 |
+| `CRON_SECRET` | 크론 사용 시 | ❌ | Vercel cron 요청 인증 헤더 |
+
+### 배포 순서
+
+```bash
+# 1. Vercel 프로젝트 생성 (혹은 import) 후 위 env 주입
+# 2. 국내 PostgreSQL 에 마이그레이션 적용
+DATABASE_URL="postgres://…" npm run db:migrate
+DATABASE_URL="postgres://…" npm run db:seed
+# 3. Vercel 에서 main 브랜치 자동 배포, Preview 는 PR 별
+```
+
+빌드 중에는 DB 를 호출하지 않도록 공개 페이지를 `dynamic = "force-dynamic"` 으로
+표기했다. Preview 환경에 staging DB 연결을 권장.
 
 ## 문서
 

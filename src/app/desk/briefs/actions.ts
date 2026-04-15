@@ -140,11 +140,12 @@ export async function transitionBriefAction(_prev: unknown, fd: FormData) {
     if ((current.summary?.length ?? 0) < 10 || (current.bodyMd?.length ?? 0) < 20) {
       return { ok: false, error: "요약/본문이 너무 짧습니다." } as const;
     }
-    const [{ count }] = await db
+    const [countRow] = await db
       .select({ count: sql<number>`count(*)::int` })
       .from(issueSourceLinks)
       .where(eq(issueSourceLinks.issueId, current.issueId));
-    if ((count ?? 0) < 1) {
+    const sourceCount = countRow?.count ?? 0;
+    if (sourceCount < 1) {
       return {
         ok: false,
         error: "공개 브리프는 최소 1건 이상의 연결 출처가 필요합니다.",

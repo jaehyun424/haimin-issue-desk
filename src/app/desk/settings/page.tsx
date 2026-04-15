@@ -14,7 +14,7 @@ export const metadata = { title: "설정" };
 export default async function DeskSettingsPage() {
   const session = await requireDeskSession();
   const [flagValues, flagRows, categories] = await Promise.all([
-    getAllFlags().catch(() => ({})),
+    getAllFlags().catch(() => ({}) as Record<string, boolean>),
     db.select().from(featureFlags),
     db.select().from(issueCategories).orderBy(issueCategories.sortOrder, desc(issueCategories.createdAt)),
   ]);

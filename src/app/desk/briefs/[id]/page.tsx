@@ -41,10 +41,11 @@ export default async function BriefDetailPage({ params }: Props) {
     .then((r) => r[0]);
   if (!brief) notFound();
 
-  const [{ count }] = await db
+  const [countRow] = await db
     .select({ count: sql<number>`count(*)::int` })
     .from(issueSourceLinks)
     .where(eq(issueSourceLinks.issueId, brief.issueId));
+  const count = countRow?.count ?? 0;
 
   return (
     <div className="space-y-8">

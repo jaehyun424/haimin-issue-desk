@@ -7,7 +7,6 @@ interface NavItem {
 }
 
 const NAV: NavItem[] = [
-  { href: "/", label: "홈" },
   { href: "/brief", label: "브리프" },
   { href: "/brief/activity", label: "의정활동" },
 ];
@@ -15,14 +14,22 @@ const NAV: NavItem[] = [
 export function SiteHeader({ voiceEnabled }: { voiceEnabled: boolean }) {
   const items = voiceEnabled ? [...NAV, { href: "/voice", label: "정책 제안" }] : NAV;
   return (
-    <header className="border-b border-border bg-background/80 backdrop-blur-sm">
-      <div className="container flex h-14 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="rounded-sm bg-gov-navy px-2 py-1 text-xs font-semibold tracking-tight text-white">
-            이해민 의원실
+    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+      <div className="container flex h-16 items-center justify-between">
+        <Link href="/" className="group flex items-center gap-3">
+          <span
+            aria-hidden
+            className="gov-seal flex h-8 w-8 items-center justify-center rounded-md text-[10px] font-bold tracking-tight shadow-flat"
+          >
+            이해민
           </span>
-          <span className="hidden text-sm text-muted-foreground sm:inline">
-            과방위 의정 브리프
+          <span className="flex flex-col leading-tight">
+            <span className="text-sm font-semibold text-foreground">
+              이해민 의원실
+            </span>
+            <span className="text-xs text-muted-foreground">
+              과방위 의정 브리프
+            </span>
           </span>
         </Link>
         <nav aria-label="주요 메뉴" className="flex items-center gap-1">
@@ -31,7 +38,7 @@ export function SiteHeader({ voiceEnabled }: { voiceEnabled: boolean }) {
               key={item.href}
               href={item.href}
               className={cn(
-                "rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground",
+                "relative rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground",
               )}
             >
               {item.label}

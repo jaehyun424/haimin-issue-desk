@@ -10,6 +10,7 @@ import { VOICE_TYPE_DESCRIPTIONS, VOICE_TYPE_LABELS, VOICE_TYPES } from "@/lib/v
 import { VoiceForm } from "@/components/voice/voice-form";
 
 export const metadata = { title: "과방위 정책 제안 접수" };
+export const dynamic = "force-dynamic";
 
 export default async function VoicePage() {
   const flags = await getFlags([FLAG.VOICE_ENABLED]).catch(() => ({

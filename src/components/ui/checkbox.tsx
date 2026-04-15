@@ -4,8 +4,7 @@ import * as React from "react";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export interface CheckboxProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {}
+export type CheckboxProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "type">;
 
 /**
  * 네이티브 checkbox 위에 커스텀 체크 표식을 덧씌운 간단한 구현.

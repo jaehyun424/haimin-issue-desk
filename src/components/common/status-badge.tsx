@@ -1,11 +1,11 @@
 import { Badge } from "@/components/ui/badge";
 import {
-  ISSUE_PRIORITIES,
+  type ISSUE_PRIORITIES,
   ISSUE_PRIORITY_LABELS,
-  ISSUE_STATUSES,
+  type ISSUE_STATUSES,
   ISSUE_STATUS_LABELS,
 } from "@/lib/validation/issue";
-import { BRIEF_STATUSES, BRIEF_STATUS_LABELS } from "@/lib/validation/brief";
+import { type BRIEF_STATUSES, BRIEF_STATUS_LABELS } from "@/lib/validation/brief";
 
 export function IssueStatusBadge({ status }: { status: (typeof ISSUE_STATUSES)[number] }) {
   const map = {

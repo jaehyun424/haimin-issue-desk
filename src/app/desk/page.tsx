@@ -1,11 +1,16 @@
 import Link from "next/link";
-import { and, desc, eq, gte, inArray, sql } from "drizzle-orm";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  ArrowRight,
+  ClipboardList,
+  Database,
+  FileText,
+} from "lucide-react";
+import { desc, eq, gte, inArray, sql } from "drizzle-orm";
+import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/common/empty-state";
 import { Section } from "@/components/common/section";
 import { FreshnessIndicator } from "@/components/common/freshness-indicator";
 import { IssueStatusBadge } from "@/components/common/status-badge";
-import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import { briefs, issues, sourceDocuments } from "@/lib/db/schema";
 import { requireDeskSession } from "@/lib/auth/session";
@@ -14,7 +19,7 @@ import { formatKoreanDateTime } from "@/lib/utils";
 export const metadata = { title: "Desk 대시보드" };
 
 export default async function DeskHome() {
-  await requireDeskSession();
+  const session = await requireDeskSession();
 
   const since = new Date(Date.now() - 7 * 24 * 3600 * 1000);
   const [newSources, reviewingIssues, readyBriefs, latestIssues, latestSources] =
@@ -55,58 +60,92 @@ export default async function DeskHome() {
         .orderBy(desc(sourceDocuments.fetchedAt))
         .limit(6),
     ]);
-  void and;
+
+  const now = new Date();
+  const hour = now.getHours();
+  const greeting =
+    hour < 6 ? "새벽에 고생 많으십니다" : hour < 12 ? "좋은 아침입니다" : hour < 18 ? "오늘도 수고 많으십니다" : "오늘 하루 마무리하세요";
+
+  const stats = [
+    {
+      label: "최근 7일 수집 소스",
+      value: newSources,
+      hint: "자동 파이프라인 + 수기 입력 합계",
+      icon: Database,
+      href: "/desk/sources",
+    },
+    {
+      label: "검토 대기 이슈",
+      value: reviewingIssues,
+      hint: "상태: 신규 · 검토중",
+      icon: ClipboardList,
+      href: "/desk/issues?status=reviewing",
+    },
+    {
+      label: "발행 대기 브리프",
+      value: readyBriefs,
+      hint: "reviewer 승인 대기",
+      icon: FileText,
+      href: "/desk/briefs?status=review",
+    },
+  ];
 
   return (
-    <div className="space-y-8">
-      <header>
-        <h1 className="text-2xl font-semibold tracking-tight">대시보드</h1>
-        <p className="text-sm text-muted-foreground">
-          과방위 현안 운영 현황을 한눈에 봅니다.
-        </p>
+    <div className="space-y-10">
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
+            Desk
+          </p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+            {greeting}, {session.user.name || "담당자"}님
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            현재 날짜 · {formatKoreanDateTime(now).split(" ")[0]}
+          </p>
+        </div>
+        <Button asChild size="lg" className="shadow-soft">
+          <Link href="/desk/issues/new">
+            새 이슈 만들기
+            <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
+          </Link>
+        </Button>
       </header>
 
       <section className="grid gap-4 sm:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">
-              최근 7일 수집 소스
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-semibold">{newSources}</p>
-            <p className="text-xs text-muted-foreground">
-              자동 파이프라인 + 수기 입력 합계
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">검토 대기 이슈</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-semibold">{reviewingIssues}</p>
-            <p className="text-xs text-muted-foreground">
-              상태: 신규 · 검토중
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">발행 대기 브리프</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-semibold">{readyBriefs}</p>
-            <p className="text-xs text-muted-foreground">reviewer 승인 대기</p>
-          </CardContent>
-        </Card>
+        {stats.map((s) => {
+          const Icon = s.icon;
+          return (
+            <Link key={s.label} href={s.href} className="stat-tile group">
+              <div className="flex items-start justify-between">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+                  <Icon className="h-4 w-4" aria-hidden />
+                </span>
+                <ArrowRight
+                  className="h-4 w-4 text-muted-foreground opacity-0 transition-all group-hover:opacity-100 group-hover:text-primary"
+                  aria-hidden
+                />
+              </div>
+              <p className="mt-5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                {s.label}
+              </p>
+              <p className="mt-1 text-[2.25rem] font-semibold leading-none tracking-tight tabular-nums">
+                {s.value}
+              </p>
+              <p className="mt-2 text-xs text-muted-foreground">{s.hint}</p>
+            </Link>
+          );
+        })}
       </section>
 
       <Section
         title="최근 이슈"
         actions={
-          <Button asChild size="sm" variant="ghost">
-            <Link href="/desk/issues">전체 보기 →</Link>
+          <Button asChild size="sm" variant="ghost" className="gap-1">
+            <Link href="/desk/issues">
+              전체 보기
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
           </Button>
         }
       >
@@ -121,25 +160,21 @@ export default async function DeskHome() {
             }
           />
         ) : (
-          <ul className="space-y-2">
+          <ul className="divide-y divide-border rounded-xl border border-border bg-card shadow-flat">
             {latestIssues.map((i) => (
               <li key={i.id}>
-                <Card>
-                  <CardContent className="flex flex-wrap items-center justify-between gap-3 p-4">
-                    <div className="min-w-0 flex-1">
-                      <Link
-                        href={`/desk/issues/${i.id}`}
-                        className="text-base font-medium hover:underline"
-                      >
-                        {i.title}
-                      </Link>
-                      <p className="text-xs text-muted-foreground">
-                        {formatKoreanDateTime(i.updatedAt)}
-                      </p>
-                    </div>
-                    <IssueStatusBadge status={i.status} />
-                  </CardContent>
-                </Card>
+                <Link
+                  href={`/desk/issues/${i.id}`}
+                  className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 transition-colors hover:bg-muted/40"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[15px] font-medium">{i.title}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatKoreanDateTime(i.updatedAt)}
+                    </p>
+                  </div>
+                  <IssueStatusBadge status={i.status} />
+                </Link>
               </li>
             ))}
           </ul>
@@ -149,32 +184,33 @@ export default async function DeskHome() {
       <Section
         title="최근 수집 소스"
         actions={
-          <Button asChild size="sm" variant="ghost">
-            <Link href="/desk/sources">전체 보기 →</Link>
+          <Button asChild size="sm" variant="ghost" className="gap-1">
+            <Link href="/desk/sources">
+              전체 보기
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
           </Button>
         }
       >
         {latestSources.length === 0 ? (
           <EmptyState title="아직 수집된 소스가 없습니다" />
         ) : (
-          <ul className="space-y-2">
+          <ul className="divide-y divide-border rounded-xl border border-border bg-card shadow-flat">
             {latestSources.map((s) => (
-              <li key={s.id}>
-                <Card>
-                  <CardContent className="flex flex-wrap items-center justify-between gap-3 p-4">
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium">{s.title}</p>
-                      <p className="text-xs text-muted-foreground">{s.sourceName}</p>
-                    </div>
-                    <FreshnessIndicator label="수집" value={s.fetchedAt} />
-                  </CardContent>
-                </Card>
+              <li
+                key={s.id}
+                className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{s.title}</p>
+                  <p className="text-xs text-muted-foreground">{s.sourceName}</p>
+                </div>
+                <FreshnessIndicator label="수집" value={s.fetchedAt} />
               </li>
             ))}
           </ul>
         )}
       </Section>
-
     </div>
   );
 }

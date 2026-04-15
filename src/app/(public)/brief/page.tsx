@@ -1,16 +1,17 @@
 import Link from "next/link";
+import { ArrowRight, Search, X } from "lucide-react";
 import { and, desc, eq, ilike, sql } from "drizzle-orm";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/common/empty-state";
-import { Section } from "@/components/common/section";
 import { FreshnessIndicator } from "@/components/common/freshness-indicator";
 import { db } from "@/lib/db";
 import { briefs, issueCategories, issues } from "@/lib/db/schema";
-import { formatKoreanDate, truncate } from "@/lib/utils";
+import { truncate } from "@/lib/utils";
 
 export const metadata = { title: "브리프 목록" };
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 interface Props {
   searchParams: Promise<{ category?: string; q?: string }>;
@@ -31,6 +32,7 @@ export default async function BriefListPage({ searchParams }: Props) {
         title: briefs.title,
         summary: briefs.summary,
         publishedAt: briefs.publishedAt,
+        lastVerifiedAt: briefs.lastVerifiedAt,
         issueId: briefs.issueId,
         categoryName: issueCategories.name,
       })
@@ -48,46 +50,95 @@ export default async function BriefListPage({ searchParams }: Props) {
       .limit(50),
   ]);
 
+  const activeFilters = [
+    params.q ? { label: `"${params.q}"`, key: "q" } : null,
+    params.category ? { label: params.category, key: "category" } : null,
+  ].filter(Boolean) as { label: string; key: string }[];
+
   return (
-    <div className="space-y-8">
-      <header className="space-y-3">
-        <h1 className="text-3xl font-semibold tracking-tight">브리프 목록</h1>
-        <p className="max-w-2xl text-muted-foreground">
-          이해민 의원실이 정리한 과방위 현안 브리프입니다. 제목으로 검색하거나 카테고리로 필터링할
-          수 있습니다.
+    <div className="space-y-10">
+      <header className="space-y-4">
+        <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+          Briefs
         </p>
-        <form className="flex flex-wrap gap-2" action="/brief" method="get">
-          <input
-            type="text"
-            name="q"
-            defaultValue={params.q ?? ""}
-            placeholder="제목 검색"
-            className="h-10 w-full max-w-xs rounded-md border border-input bg-background px-3"
-            aria-label="브리프 검색"
-          />
-          <select
-            name="category"
-            defaultValue={params.category ?? ""}
-            className="h-10 rounded-md border border-input bg-background px-3 text-sm"
-            aria-label="카테고리 선택"
-          >
-            <option value="">전체 카테고리</option>
-            {allCategories.map((c) => (
-              <option key={c.id} value={c.name}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-          <button
-            type="submit"
-            className="h-10 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
-          >
-            검색
-          </button>
-        </form>
+        <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-[2.75rem]">
+          과방위 현안 브리프
+        </h1>
+        <p className="max-w-2xl text-[17px] leading-relaxed text-muted-foreground">
+          이해민 의원실이 작성·검토한 공개 브리프입니다. 제목 또는 카테고리로 필터링할 수
+          있고, 각 글에는 공식 출처와 마지막 검증 시각이 함께 표기됩니다.
+        </p>
       </header>
 
-      <Section title={`${rows.length}건`}>
+      <form
+        action="/brief"
+        method="get"
+        className="flex flex-col gap-3 sm:flex-row sm:items-center"
+      >
+        <label htmlFor="search" className="sr-only">
+          제목 검색
+        </label>
+        <div className="relative flex-1">
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden
+          />
+          <Input
+            id="search"
+            type="search"
+            name="q"
+            defaultValue={params.q ?? ""}
+            placeholder="제목으로 검색"
+            className="pl-9"
+          />
+        </div>
+        <select
+          name="category"
+          defaultValue={params.category ?? ""}
+          className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+          aria-label="카테고리 선택"
+        >
+          <option value="">전체 카테고리</option>
+          {allCategories.map((c) => (
+            <option key={c.id} value={c.name}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <Button type="submit">검색</Button>
+      </form>
+
+      {activeFilters.length > 0 ? (
+        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+          <span>적용된 필터:</span>
+          {activeFilters.map((f) => (
+            <Link
+              key={f.key}
+              href={{
+                pathname: "/brief",
+                query: Object.fromEntries(
+                  Object.entries(params).filter(([k]) => k !== f.key),
+                ),
+              }}
+              className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/40 px-3 py-1 font-medium text-foreground hover:bg-muted"
+            >
+              {f.label}
+              <X className="h-3 w-3" aria-hidden />
+            </Link>
+          ))}
+          <Link
+            href="/brief"
+            className="text-primary underline-offset-4 hover:underline"
+          >
+            전체 해제
+          </Link>
+        </div>
+      ) : null}
+
+      <div>
+        <p className="mb-4 text-sm text-muted-foreground">
+          총 <span className="font-semibold text-foreground">{rows.length}</span>건
+        </p>
         {rows.length === 0 ? (
           <EmptyState
             title="조건에 맞는 브리프가 없습니다"
@@ -97,32 +148,42 @@ export default async function BriefListPage({ searchParams }: Props) {
           <ul className="grid gap-4">
             {rows.map((b) => (
               <li key={b.id}>
-                <Card>
-                  <CardContent className="flex flex-col gap-2 p-5">
-                    <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                      {b.categoryName ? <Badge variant="outline">{b.categoryName}</Badge> : null}
-                      <span>{formatKoreanDate(b.publishedAt)}</span>
-                      <FreshnessIndicator
-                        label="발행"
-                        value={b.publishedAt}
-                        variant="relative"
-                      />
-                    </div>
-                    <h2 className="text-xl font-semibold leading-snug">
-                      <Link href={`/brief/issues/${b.slug}`} className="hover:underline">
+                <Link
+                  href={`/brief/issues/${encodeURIComponent(b.slug)}`}
+                  className="block"
+                >
+                  <article className="card-float flex flex-col gap-3 p-6 sm:flex-row sm:items-start sm:gap-6">
+                    <div className="flex-1 space-y-2">
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                        {b.categoryName ? (
+                          <Badge variant="outline" className="font-medium">
+                            {b.categoryName}
+                          </Badge>
+                        ) : null}
+                        <FreshnessIndicator
+                          label="발행"
+                          value={b.publishedAt}
+                          variant="both"
+                        />
+                      </div>
+                      <h2 className="text-xl font-semibold leading-snug tracking-tight">
                         {b.title}
-                      </Link>
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      {truncate(b.summary, 220)}
-                    </p>
-                  </CardContent>
-                </Card>
+                      </h2>
+                      <p className="text-[15px] leading-relaxed text-muted-foreground">
+                        {truncate(b.summary, 220)}
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1 text-sm font-medium text-primary sm:mt-1">
+                      자세히
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                    </div>
+                  </article>
+                </Link>
               </li>
             ))}
           </ul>
         )}
-      </Section>
+      </div>
     </div>
   );
 }

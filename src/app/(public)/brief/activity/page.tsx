@@ -24,24 +24,24 @@ export default async function ActivityTimelinePage() {
     .orderBy(desc(memberActivities.occurredAt))
     .limit(200);
 
-  const isFallback = rows.length === 0;
-  const items = isFallback
-    ? FALLBACK_ACTIVITIES.map((a) => ({
-        id: a.id,
-        activityType: a.activityType,
-        occurredAt: a.occurredAt,
-        title: a.title,
-        summary: a.summary,
-        officialSourceUrl: a.officialSourceUrl,
-      }))
-    : rows.map((a) => ({
-        id: a.id,
-        activityType: a.activityType,
-        occurredAt: a.occurredAt.toISOString(),
-        title: a.title,
-        summary: a.summary,
-        officialSourceUrl: a.officialSourceUrl,
-      }));
+  const items =
+    rows.length === 0
+      ? FALLBACK_ACTIVITIES.map((a) => ({
+          id: a.id,
+          activityType: a.activityType,
+          occurredAt: a.occurredAt,
+          title: a.title,
+          summary: a.summary,
+          officialSourceUrl: a.officialSourceUrl,
+        }))
+      : rows.map((a) => ({
+          id: a.id,
+          activityType: a.activityType,
+          occurredAt: a.occurredAt.toISOString(),
+          title: a.title,
+          summary: a.summary,
+          officialSourceUrl: a.officialSourceUrl,
+        }));
 
   return (
     <div className="space-y-8">
@@ -53,15 +53,6 @@ export default async function ActivityTimelinePage() {
           표시합니다. 사실 기록 중심으로 정리하며, 정치적 수사는 배제합니다.
         </p>
       </header>
-
-      {isFallback ? (
-        <div className="rounded border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-          <strong className="text-foreground">예시 데이터입니다.</strong> 국회 Open API 연동
-          (<code className="font-mono text-xs">ASSEMBLY_API_KEY</code> + 의원{" "}
-          <code className="font-mono text-xs">MONA_CD</code>) 과 수기 입력이 반영되면 이 페이지는
-          실제 기록으로 자동 전환됩니다.
-        </div>
-      ) : null}
 
       <section>
         <p className="mb-5 text-sm text-muted-foreground">

@@ -82,10 +82,10 @@ export function BriefForm({ mode, issueId, initial }: Props) {
       </div>
 
       {err ? <p className="text-sm text-destructive">{err}</p> : null}
-      {ok ? <p className="text-sm text-emerald-700">저장되었습니다.</p> : null}
+      {ok ? <p className="text-sm text-foreground">저장되었습니다.</p> : null}
 
-      <div className="flex justify-end gap-2">
-        <Button type="submit" disabled={pending}>
+      <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+        <Button type="submit" disabled={pending} className="w-full sm:w-auto">
           {pending ? "저장 중…" : mode === "create" ? "초안 만들기" : "저장"}
         </Button>
       </div>

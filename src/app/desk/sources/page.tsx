@@ -38,31 +38,41 @@ export default async function DeskSourcesPage({ searchParams }: Props) {
     .limit(100);
 
   return (
-    <div className="space-y-6">
-      <header>
-        <h1 className="text-2xl font-semibold tracking-tight">수집 문서</h1>
-        <p className="text-sm text-muted-foreground">
-          자동 파이프라인 및 수기 입력으로 수집된 출처 문서입니다. 이슈에 연결해 공개 브리프의 근거로 사용합니다.
+    <div className="space-y-8">
+      <header className="border-b border-border pb-6">
+        <p className="kicker">Sources</p>
+        <h1 className="mt-2">수집 문서</h1>
+        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+          자동 파이프라인 및 수기 입력으로 수집된 출처 문서입니다. 이슈에 연결해 공개
+          브리프의 근거로 사용합니다.
         </p>
       </header>
 
-      <Card>
-        <CardContent className="p-5">
-          <h2 className="mb-3 text-base font-semibold">수기 문서 추가</h2>
-          <CreateSourceForm />
-        </CardContent>
-      </Card>
+      <section>
+        <header className="border-b border-foreground/80 pb-2">
+          <h2>수기 문서 추가</h2>
+        </header>
+        <Card className="mt-5">
+          <CardContent className="p-5 sm:p-6">
+            <CreateSourceForm />
+          </CardContent>
+        </Card>
+      </section>
 
-      <form action="/desk/sources" method="get" className="flex gap-2">
+      <form
+        action="/desk/sources"
+        method="get"
+        className="flex flex-col gap-2 sm:flex-row"
+      >
         <input
           type="text"
           name="q"
           defaultValue={params.q ?? ""}
           placeholder="제목 검색"
-          className="h-10 w-full max-w-xs rounded-md border border-input bg-background px-3"
+          className="h-10 w-full rounded-md border border-input bg-background px-3 sm:max-w-xs"
           aria-label="제목 검색"
         />
-        <Button type="submit" variant="outline">
+        <Button type="submit" variant="outline" className="w-full sm:w-auto">
           검색
         </Button>
       </form>

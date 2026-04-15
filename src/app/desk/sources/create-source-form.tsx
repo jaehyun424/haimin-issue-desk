@@ -61,12 +61,12 @@ export function CreateSourceForm() {
       </div>
       {err ? <p className="sm:col-span-2 text-sm text-destructive">{err}</p> : null}
       {id ? (
-        <p className="sm:col-span-2 text-sm text-emerald-700">
-          저장되었습니다. ID: <code>{id}</code>
+        <p className="sm:col-span-2 text-sm text-foreground">
+          저장되었습니다. ID: <code className="font-mono">{id}</code>
         </p>
       ) : null}
       <div className="sm:col-span-2">
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" disabled={pending} className="w-full sm:w-auto">
           {pending ? "저장 중…" : "수집 문서 저장"}
         </Button>
       </div>

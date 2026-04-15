@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   VOICE_TYPES,
   VOICE_TYPE_DESCRIPTIONS,
@@ -31,24 +30,35 @@ export function VoiceForm({
   const err = (state as { error?: string } | null)?.error;
 
   return (
-    <form action={formAction} className="space-y-5" aria-describedby="voice-help">
-      <p id="voice-help" className="sr-only">
-        과방위 관련 정책 제안 및 현장 의견을 접수하는 양식입니다. 필수 항목은 제목, 내용, 개인정보
-        수집·이용 동의입니다.
+    <form action={formAction} className="space-y-8">
+      <p className="sr-only">
+        과방위 관련 정책 제안 및 현장 의견을 접수하는 양식입니다. 필수 항목은 제출
+        유형, 제목, 내용, 개인정보 수집·이용 동의입니다.
       </p>
 
-      <fieldset className="space-y-2">
-        <legend className="text-sm font-medium">제출 유형 *</legend>
+      {/* 제출 유형 */}
+      <fieldset className="space-y-3">
+        <legend className="text-sm font-semibold text-foreground">
+          제출 유형 <span aria-hidden>*</span>
+        </legend>
         <div className="grid gap-2 sm:grid-cols-2">
           {VOICE_TYPES.map((t) => (
             <label
               key={t}
-              className="flex cursor-pointer items-start gap-2 rounded border border-input p-3 hover:bg-accent"
+              className="flex cursor-pointer items-start gap-3 rounded border border-border bg-card p-3 text-sm transition-colors hover:border-foreground/40 has-[:checked]:border-primary has-[:checked]:bg-accent"
             >
-              <input type="radio" name="type" value={t} required className="mt-1" />
-              <span className="flex flex-col text-sm">
-                <span className="font-medium">{VOICE_TYPE_LABELS[t]}</span>
-                <span className="text-xs text-muted-foreground">
+              <input
+                type="radio"
+                name="type"
+                value={t}
+                required
+                className="mt-1 h-4 w-4 accent-[hsl(var(--primary))]"
+              />
+              <span className="min-w-0 flex-1">
+                <span className="block font-medium text-foreground">
+                  {VOICE_TYPE_LABELS[t]}
+                </span>
+                <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
                   {VOICE_TYPE_DESCRIPTIONS[t]}
                 </span>
               </span>
@@ -57,6 +67,7 @@ export function VoiceForm({
         </div>
       </fieldset>
 
+      {/* 관련 분야 */}
       <div className="space-y-2">
         <Label htmlFor="voice-category">관련 분야</Label>
         <select
@@ -74,20 +85,43 @@ export function VoiceForm({
         </select>
       </div>
 
+      {/* 제목 */}
       <div className="space-y-2">
-        <Label htmlFor="voice-title">제목 *</Label>
-        <Input id="voice-title" name="title" required maxLength={120} />
+        <Label htmlFor="voice-title">
+          제목 <span aria-hidden>*</span>
+        </Label>
+        <Input id="voice-title" name="title" required maxLength={120} className="w-full" />
+        <p className="text-xs text-muted-foreground">최대 120자</p>
       </div>
 
+      {/* 내용 */}
       <div className="space-y-2">
-        <Label htmlFor="voice-body">내용 * (20~3000자)</Label>
-        <Textarea id="voice-body" name="body" rows={10} required minLength={20} maxLength={3000} />
+        <Label htmlFor="voice-body">
+          내용 <span aria-hidden>*</span>
+        </Label>
+        <Textarea
+          id="voice-body"
+          name="body"
+          rows={10}
+          required
+          minLength={20}
+          maxLength={3000}
+          className="w-full"
+        />
+        <p className="text-xs text-muted-foreground">20~3000자</p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      {/* 선택 입력: 이름·이메일 */}
+      <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="voice-name">이름 또는 닉네임 (선택)</Label>
-          <Input id="voice-name" name="displayName" maxLength={40} autoComplete="off" />
+          <Input
+            id="voice-name"
+            name="displayName"
+            maxLength={40}
+            autoComplete="off"
+            className="w-full"
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="voice-email">이메일 (선택)</Label>
@@ -97,26 +131,36 @@ export function VoiceForm({
             type="email"
             inputMode="email"
             autoComplete="off"
+            className="w-full"
           />
         </div>
       </div>
 
-      <div className="space-y-2 rounded border border-border bg-muted/30 p-4 text-sm">
-        <label className="flex items-start gap-2">
-          <Checkbox name="consentRequired" required />
-          <span>
-            [필수] 개인정보 수집·이용에 동의합니다. 수집 목적과 보관 기간은{" "}
-            <a href="/privacy" className="underline">
+      {/* 동의 */}
+      <div className="card-line space-y-3 p-5 text-sm">
+        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          동의
+        </p>
+        <label className="flex items-start gap-3">
+          <span className="mt-0.5">
+            <Checkbox name="consentRequired" required />
+          </span>
+          <span className="text-foreground">
+            <span className="font-medium">[필수]</span> 개인정보 수집·이용에 동의합니다.
+            수집 목적과 보관 기간은{" "}
+            <a href="/privacy" className="underline underline-offset-4">
               개인정보 처리방침
             </a>
             을 확인해 주세요.
           </span>
         </label>
-        <label className="flex items-start gap-2">
-          <Checkbox name="consentOptionalContact" />
-          <span>
-            [선택] 이메일로 후속 연락을 받는 것에 동의합니다. 동의하신 경우 이메일을 입력해
-            주세요.
+        <label className="flex items-start gap-3">
+          <span className="mt-0.5">
+            <Checkbox name="consentOptionalContact" />
+          </span>
+          <span className="text-foreground">
+            <span className="font-medium">[선택]</span> 이메일로 후속 연락을 받는 것에
+            동의합니다. 동의하신 경우 이메일을 입력해 주세요.
           </span>
         </label>
       </div>
@@ -124,18 +168,23 @@ export function VoiceForm({
       <TurnstileWidget siteKey={turnstileSiteKey} />
 
       {err ? (
-        <Alert variant="destructive">
-          <AlertTitle>전송하지 못했습니다</AlertTitle>
-          <AlertDescription>{err}</AlertDescription>
-        </Alert>
+        <div
+          role="alert"
+          className="rounded border border-destructive/40 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+        >
+          <p className="font-medium">전송하지 못했습니다</p>
+          <p className="mt-0.5">{err}</p>
+        </div>
       ) : null}
 
-      <Button type="submit" disabled={pending}>
-        {pending ? "전송 중…" : "의견 보내기"}
-      </Button>
-      <p className="text-xs text-muted-foreground">
-        제출 후에는 담당자만 내용을 열람합니다. 외부에는 종합 의견 형태로만 반영됩니다.
-      </p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={pending}>
+          {pending ? "전송 중…" : "의견 보내기"}
+        </Button>
+        <p className="text-xs text-muted-foreground">
+          제출 내용은 담당자만 열람합니다. 외부에는 종합 의견 형태로만 반영됩니다.
+        </p>
+      </div>
     </form>
   );
 }

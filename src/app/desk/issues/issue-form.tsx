@@ -160,11 +160,11 @@ export function IssueForm({ mode, categories, owners, initial }: Props) {
 
       {err ? <p className="text-sm text-destructive">{err}</p> : null}
       {state && (state as { ok?: boolean }).ok ? (
-        <p className="text-sm text-emerald-600">저장되었습니다.</p>
+        <p className="text-sm text-foreground">저장되었습니다.</p>
       ) : null}
 
-      <div className="flex justify-end gap-2">
-        <Button type="submit" disabled={pending}>
+      <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+        <Button type="submit" disabled={pending} className="w-full sm:w-auto">
           {pending ? "저장 중…" : "저장"}
         </Button>
       </div>

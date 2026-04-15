@@ -49,21 +49,24 @@ export default async function DeskBriefsPage({ searchParams }: Props) {
     .limit(100);
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">브리프 관리</h1>
-          <p className="text-sm text-muted-foreground">
-            초안 → 검토 → 발행 단계로 관리합니다. 발행은 reviewer 권한이 필요합니다.
-          </p>
-        </div>
+    <div className="space-y-8">
+      <header className="border-b border-border pb-6">
+        <p className="kicker">Briefs</p>
+        <h1 className="mt-2">브리프 관리</h1>
+        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+          초안 → 검토 → 발행 단계로 관리합니다. 발행은 reviewer 권한이 필요합니다.
+        </p>
       </header>
 
-      <form action="/desk/briefs" method="get" className="flex gap-2">
+      <form
+        action="/desk/briefs"
+        method="get"
+        className="flex flex-col gap-2 sm:flex-row"
+      >
         <select
           name="status"
           defaultValue={params.status ?? ""}
-          className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+          className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm sm:w-auto"
           aria-label="상태 필터"
         >
           <option value="">전체</option>
@@ -73,7 +76,7 @@ export default async function DeskBriefsPage({ searchParams }: Props) {
             </option>
           ))}
         </select>
-        <Button type="submit" variant="outline">
+        <Button type="submit" variant="outline" className="w-full sm:w-auto">
           필터
         </Button>
       </form>

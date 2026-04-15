@@ -68,15 +68,16 @@ export default async function DeskIssuesPage({ searchParams }: Props) {
     .orderBy(issueCategories.sortOrder);
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-wrap items-center justify-between gap-3">
+    <div className="space-y-8">
+      <header className="flex flex-col gap-3 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">이슈 관리</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="kicker">Issues</p>
+          <h1 className="mt-2">이슈 관리</h1>
+          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
             과방위 현안을 이슈 단위로 추적합니다.
           </p>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full sm:w-auto">
           <Link href="/desk/issues/new">새 이슈</Link>
         </Button>
       </header>

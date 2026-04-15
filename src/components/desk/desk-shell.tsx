@@ -51,8 +51,9 @@ export function DeskShell({
           className="inline-flex h-9 w-9 items-center justify-center rounded border border-border text-foreground"
           aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
           aria-expanded={open}
+          aria-controls="desk-mobile-drawer"
         >
-          {open ? <Menu className="h-4 w-4" aria-hidden /> : <Menu className="h-4 w-4" aria-hidden />}
+          {open ? <X className="h-4 w-4" aria-hidden /> : <Menu className="h-4 w-4" aria-hidden />}
         </button>
         <span className="text-sm font-semibold">이해민 의원실 Desk</span>
       </div>
@@ -77,27 +78,18 @@ export function DeskShell({
               onClick={() => setOpen(false)}
             />
             <div
+              id="desk-mobile-drawer"
               role="dialog"
               aria-modal="true"
               aria-label="Desk 메뉴"
-              className="fixed inset-y-0 left-0 z-50 w-60 md:hidden"
+              className="fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] md:hidden"
             >
-              <div className="relative h-full">
-                <button
-                  type="button"
-                  onClick={() => setOpen(false)}
-                  className="absolute right-2 top-3 inline-flex h-8 w-8 items-center justify-center rounded border border-border bg-card text-foreground"
-                  aria-label="메뉴 닫기"
-                >
-                  <X className="h-4 w-4" aria-hidden />
-                </button>
-                <DeskSidebar
-                  voiceEnabled={voiceEnabled}
-                  userLabel={userLabel}
-                  roleLabel={roleLabel}
-                  onNavigate={() => setOpen(false)}
-                />
-              </div>
+              <DeskSidebar
+                voiceEnabled={voiceEnabled}
+                userLabel={userLabel}
+                roleLabel={roleLabel}
+                onNavigate={() => setOpen(false)}
+              />
             </div>
           </>
         ) : null}

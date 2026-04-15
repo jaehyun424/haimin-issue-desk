@@ -49,27 +49,25 @@ export default async function BriefDetailPage({ params }: Props) {
 
   return (
     <div className="space-y-8">
-      <header className="flex flex-wrap items-start justify-between gap-3">
-        <div className="space-y-2">
-          <p className="text-xs text-muted-foreground">
-            이슈:{" "}
-            <Link className="hover:underline" href={`/desk/issues/${brief.issueId}`}>
-              {brief.issueTitle}
-            </Link>
-            {" · "}
-            슬러그: {brief.slug}
-          </p>
-          <h1 className="text-2xl font-semibold tracking-tight">{brief.title}</h1>
-          <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-            <BriefStatusBadge status={brief.status} />
-            <span>갱신: {formatKoreanDateTime(brief.updatedAt)}</span>
-            {brief.publishedAt ? (
-              <span>발행: {formatKoreanDateTime(brief.publishedAt)}</span>
-            ) : null}
-          </div>
+      <header className="space-y-3 border-b border-border pb-6">
+        <p className="text-xs text-muted-foreground">
+          이슈:{" "}
+          <Link className="hover:underline" href={`/desk/issues/${brief.issueId}`}>
+            {brief.issueTitle}
+          </Link>
+          <span className="mx-1">·</span>
+          <span className="font-mono">{brief.slug}</span>
+        </p>
+        <h1 className="text-[1.75rem] leading-[1.25] sm:text-[2rem]">{brief.title}</h1>
+        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+          <BriefStatusBadge status={brief.status} />
+          <span>갱신: {formatKoreanDateTime(brief.updatedAt)}</span>
+          {brief.publishedAt ? (
+            <span>발행: {formatKoreanDateTime(brief.publishedAt)}</span>
+          ) : null}
         </div>
         {brief.status === "published" ? (
-          <Button asChild variant="outline" size="sm">
+          <Button asChild variant="outline" size="sm" className="w-full sm:w-auto">
             <Link href={`/brief/issues/${brief.slug}`} target="_blank">
               공개 페이지 보기
             </Link>

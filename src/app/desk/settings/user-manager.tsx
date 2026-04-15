@@ -36,22 +36,36 @@ export function UserManager({
   return (
     <div className="space-y-6">
       {canManage ? <CreateUserForm /> : null}
-      <div className="overflow-x-auto">
+
+      {/* 데스크톱: 테이블 */}
+      <div className="hidden overflow-x-auto rounded border border-border md:block">
         <table className="w-full text-sm">
-          <thead className="table-gov">
-            <tr>
-              <th>이메일</th>
-              <th>이름</th>
-              <th>역할</th>
-              <th>상태</th>
-              <th>마지막 로그인</th>
-              <th className="w-[280px]">관리</th>
+          <thead>
+            <tr className="border-b-2 border-foreground/80 bg-muted/40">
+              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                이메일
+              </th>
+              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                이름
+              </th>
+              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                역할
+              </th>
+              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                상태
+              </th>
+              <th className="px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                마지막 로그인
+              </th>
+              <th className="w-[280px] px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                관리
+              </th>
             </tr>
           </thead>
-          <tbody className="table-gov">
+          <tbody>
             {users.map((u) => (
-              <tr key={u.id}>
-                <td className="font-mono text-[12px]">
+              <tr key={u.id} className="border-b border-border">
+                <td className="px-3 py-3 align-middle font-mono text-[12px]">
                   {u.email}
                   {u.id === currentUserId ? (
                     <span className="ml-1 text-[10px] uppercase tracking-wider text-primary">
@@ -59,28 +73,32 @@ export function UserManager({
                     </span>
                   ) : null}
                 </td>
-                <td>{u.name}</td>
-                <td>
+                <td className="px-3 py-3 align-middle">{u.name}</td>
+                <td className="px-3 py-3 align-middle">
                   {canManage && u.id !== currentUserId ? (
                     <RoleSelect id={u.id} role={u.role} />
                   ) : (
                     ROLE_LABELS[u.role]
                   )}
                 </td>
-                <td>
+                <td className="px-3 py-3 align-middle text-sm">
                   {u.isActive ? (
-                    <span className="text-emerald-700">활성</span>
+                    <span className="text-foreground">활성</span>
                   ) : (
                     <span className="text-muted-foreground">비활성</span>
                   )}
                 </td>
-                <td className="text-muted-foreground">
+                <td className="px-3 py-3 align-middle text-muted-foreground">
                   {u.lastLoginAt ? formatKoreanDateTime(u.lastLoginAt) : "-"}
                 </td>
-                <td>
+                <td className="px-3 py-3 align-middle">
                   {canManage ? (
                     <div className="flex flex-wrap gap-1.5">
-                      <ActiveToggle id={u.id} isActive={u.isActive} disabled={u.id === currentUserId} />
+                      <ActiveToggle
+                        id={u.id}
+                        isActive={u.isActive}
+                        disabled={u.id === currentUserId}
+                      />
                       <ResetPassword id={u.id} />
                     </div>
                   ) : (
@@ -92,6 +110,60 @@ export function UserManager({
           </tbody>
         </table>
       </div>
+
+      {/* 모바일: 카드 */}
+      <ul className="space-y-3 md:hidden">
+        {users.map((u) => (
+          <li key={u.id} className="card-line space-y-3 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <p className="font-medium text-foreground">{u.name}</p>
+                <p className="break-all font-mono text-xs text-muted-foreground">
+                  {u.email}
+                  {u.id === currentUserId ? (
+                    <span className="ml-1 text-[10px] uppercase tracking-wider text-primary">
+                      (나)
+                    </span>
+                  ) : null}
+                </p>
+              </div>
+              <span
+                className={
+                  u.isActive
+                    ? "rounded bg-muted px-2 py-0.5 text-[11px] font-medium text-foreground"
+                    : "rounded bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
+                }
+              >
+                {u.isActive ? "활성" : "비활성"}
+              </span>
+            </div>
+            <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">
+              <span className="text-muted-foreground">역할</span>
+              <span>
+                {canManage && u.id !== currentUserId ? (
+                  <RoleSelect id={u.id} role={u.role} />
+                ) : (
+                  ROLE_LABELS[u.role]
+                )}
+              </span>
+              <span className="text-muted-foreground">마지막 로그인</span>
+              <span className="text-muted-foreground">
+                {u.lastLoginAt ? formatKoreanDateTime(u.lastLoginAt) : "-"}
+              </span>
+            </div>
+            {canManage ? (
+              <div className="flex flex-wrap gap-2 border-t border-border pt-3">
+                <ActiveToggle
+                  id={u.id}
+                  isActive={u.isActive}
+                  disabled={u.id === currentUserId}
+                />
+                <ResetPassword id={u.id} />
+              </div>
+            ) : null}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -107,11 +179,11 @@ function CreateUserForm() {
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="space-y-1">
           <Label htmlFor="new-email">이메일</Label>
-          <Input id="new-email" name="email" type="email" required />
+          <Input id="new-email" name="email" type="email" required className="w-full" />
         </div>
         <div className="space-y-1">
           <Label htmlFor="new-name">이름</Label>
-          <Input id="new-name" name="name" required maxLength={60} />
+          <Input id="new-name" name="name" required maxLength={60} className="w-full" />
         </div>
         <div className="space-y-1">
           <Label htmlFor="new-role">역할</Label>
@@ -130,18 +202,25 @@ function CreateUserForm() {
         </div>
         <div className="space-y-1">
           <Label htmlFor="new-password">초기 비밀번호</Label>
-          <Input id="new-password" name="password" type="text" required minLength={8} />
+          <Input
+            id="new-password"
+            name="password"
+            type="text"
+            required
+            minLength={8}
+            className="w-full"
+          />
           <p className="text-[11px] text-muted-foreground">
             최소 8자. 전달 후 즉시 변경을 요청하세요.
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <Button type="submit" disabled={pending}>
+      <div className="flex flex-wrap items-center gap-3">
+        <Button type="submit" disabled={pending} className="w-full sm:w-auto">
           {pending ? "생성 중…" : "사용자 생성"}
         </Button>
         {err ? <p className="text-sm text-destructive">{err}</p> : null}
-        {ok ? <p className="text-sm text-emerald-700">생성되었습니다.</p> : null}
+        {ok ? <p className="text-sm text-foreground">생성되었습니다.</p> : null}
       </div>
     </form>
   );
@@ -210,7 +289,7 @@ function ResetPassword({ id }: { id: string }) {
     );
   }
   return (
-    <form action={formAction} className="flex items-center gap-1">
+    <form action={formAction} className="flex flex-wrap items-center gap-1.5">
       <input type="hidden" name="id" value={id} />
       <Input
         name="password"
@@ -218,7 +297,7 @@ function ResetPassword({ id }: { id: string }) {
         placeholder="새 임시 비밀번호"
         minLength={8}
         required
-        className="h-8 w-40 text-xs"
+        className="h-8 w-full text-xs sm:w-40"
       />
       <Button type="submit" size="sm" disabled={pending}>
         {pending ? "…" : "저장"}
@@ -226,8 +305,8 @@ function ResetPassword({ id }: { id: string }) {
       <Button type="button" size="sm" variant="outline" onClick={() => setOpen(false)}>
         취소
       </Button>
-      {err ? <span className="ml-2 text-[11px] text-destructive">{err}</span> : null}
-      {msg ? <span className="ml-2 text-[11px] text-emerald-700">{msg}</span> : null}
+      {err ? <span className="text-[11px] text-destructive">{err}</span> : null}
+      {msg ? <span className="text-[11px] text-foreground">{msg}</span> : null}
     </form>
   );
 }

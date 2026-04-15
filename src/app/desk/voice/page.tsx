@@ -58,33 +58,38 @@ export default async function DeskVoicePage({ searchParams }: Props) {
     .limit(200);
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-wrap items-center justify-between gap-3">
+    <div className="space-y-8">
+      <header className="flex flex-col gap-3 border-b border-border pb-6 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">의견 접수 Triage</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="kicker">Voice Triage</p>
+          <h1 className="mt-2">의견 접수 Triage</h1>
+          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
             시민 의견을 분류하고 이슈와 연결합니다. 외부 공개는 금지됩니다.
           </p>
         </div>
-        <Badge variant={enabled ? "success" : "outline"}>
+        <Badge variant={enabled ? "success" : "outline"} className="self-start">
           공개 상태: {enabled ? "ON" : "OFF"}
         </Badge>
       </header>
 
       {!enabled ? (
         <Card>
-          <CardContent className="p-6 text-sm text-muted-foreground">
-            voice 모듈이 현재 OFF 입니다. 접수 창구는 노출되지 않으며, 기존 데이터는 여기서만
-            조회됩니다.
+          <CardContent className="p-5 text-sm text-muted-foreground sm:p-6">
+            voice 모듈이 현재 OFF 입니다. 접수 창구는 노출되지 않으며, 기존 데이터는
+            여기서만 조회됩니다.
           </CardContent>
         </Card>
       ) : null}
 
-      <form action="/desk/voice" method="get" className="flex gap-2">
+      <form
+        action="/desk/voice"
+        method="get"
+        className="flex flex-col gap-2 sm:flex-row"
+      >
         <select
           name="status"
           defaultValue={params.status ?? ""}
-          className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+          className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm sm:w-auto"
           aria-label="상태 필터"
         >
           <option value="">전체</option>
@@ -94,7 +99,7 @@ export default async function DeskVoicePage({ searchParams }: Props) {
             </option>
           ))}
         </select>
-        <Button type="submit" variant="outline">
+        <Button type="submit" variant="outline" className="w-full sm:w-auto">
           필터
         </Button>
       </form>

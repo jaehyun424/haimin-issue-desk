@@ -17,7 +17,6 @@ interface Item {
   href: string;
   label: string;
   icon: typeof LayoutDashboard;
-  /** 기본 true. false 면 해당 항목은 voice 플래그 OFF 일 때 숨김 */
   voiceOnly?: boolean;
 }
 
@@ -34,10 +33,13 @@ export function DeskSidebar({
   voiceEnabled,
   userLabel,
   roleLabel,
+  onNavigate,
 }: {
   voiceEnabled: boolean;
   userLabel: string;
   roleLabel: string;
+  /** 링크 클릭 시 호출 (모바일 드로어를 닫기 위해 사용) */
+  onNavigate?: () => void;
 }) {
   const pathname = usePathname();
   return (
@@ -46,7 +48,7 @@ export function DeskSidebar({
         <Flag className="h-5 w-5 text-primary" aria-hidden />
         <span className="text-sm font-semibold">Desk</span>
       </div>
-      <nav aria-label="Desk 메뉴" className="flex-1 space-y-0.5 p-2">
+      <nav aria-label="Desk 메뉴" className="flex-1 space-y-0.5 overflow-y-auto p-2">
         {NAV.filter((i) => (i.voiceOnly ? voiceEnabled : true)).map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -54,6 +56,7 @@ export function DeskSidebar({
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               className={cn(
                 "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
                 active

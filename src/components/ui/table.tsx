@@ -3,10 +3,11 @@ import { cn } from "@/lib/utils";
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
-    <div className="relative w-full overflow-auto">
+    <div className="relative w-full overflow-x-auto">
       <table
         ref={ref}
-        className={cn("w-full caption-bottom text-sm", className)}
+        // min-w 로 모바일에서 cell 이 뭉개지지 않도록 강제 — 컨테이너는 overflow-x-auto 로 스크롤.
+        className={cn("w-full min-w-[640px] caption-bottom text-sm", className)}
         {...props}
       />
     </div>

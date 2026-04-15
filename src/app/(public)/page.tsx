@@ -3,17 +3,14 @@ import { ChevronRight } from "lucide-react";
 import { desc, eq } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/common/empty-state";
-import { ElectionBanner } from "@/components/common/election-banner";
 import { db } from "@/lib/db";
 import { briefs, issueCategories, issues } from "@/lib/db/schema";
-import { FLAG, getFlags } from "@/lib/feature-flags";
 import { formatKoreanDate, truncate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [flags, recent, categories] = await Promise.all([
-    getFlags([FLAG.ELECTION_MODE]).catch(() => ({ [FLAG.ELECTION_MODE]: false })),
+  const [recent, categories] = await Promise.all([
     db
       .select({
         id: briefs.id,
@@ -38,9 +35,7 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-14">
-      <ElectionBanner enabled={flags[FLAG.ELECTION_MODE]} />
-
-      {/* Hero — 공공기관 톤: 기관명, 제목, 부제. 그라데이션 없음 */}
+      {/* Hero — 공공기관 톤: 기관명, 제목, 부제 */}
       <section className="border-b border-border pb-10">
         <p className="kicker">과학기술정보방송통신위원회</p>
         <h1 className="mt-4 max-w-3xl">

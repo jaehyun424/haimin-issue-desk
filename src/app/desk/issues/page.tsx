@@ -81,19 +81,23 @@ export default async function DeskIssuesPage({ searchParams }: Props) {
         </Button>
       </header>
 
-      <form action="/desk/issues" method="get" className="flex flex-wrap gap-2">
+      <form
+        action="/desk/issues"
+        method="get"
+        className="grid gap-2 sm:grid-cols-[1fr_auto_auto_auto]"
+      >
         <input
           type="text"
           name="q"
           defaultValue={params.q ?? ""}
           placeholder="제목 검색"
-          className="h-10 w-full max-w-xs rounded-md border border-input bg-background px-3"
+          className="h-10 w-full rounded-md border border-input bg-background px-3"
           aria-label="제목 검색"
         />
         <select
           name="status"
           defaultValue={params.status ?? ""}
-          className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+          className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm sm:w-auto"
           aria-label="상태 필터"
         >
           <option value="">전체 상태</option>
@@ -106,7 +110,7 @@ export default async function DeskIssuesPage({ searchParams }: Props) {
         <select
           name="category"
           defaultValue={params.category ?? ""}
-          className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+          className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm sm:w-auto"
           aria-label="카테고리 필터"
         >
           <option value="">전체 카테고리</option>
@@ -116,7 +120,7 @@ export default async function DeskIssuesPage({ searchParams }: Props) {
             </option>
           ))}
         </select>
-        <Button type="submit" variant="outline">
+        <Button type="submit" variant="outline" className="w-full sm:w-auto">
           필터
         </Button>
       </form>

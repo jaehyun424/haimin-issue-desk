@@ -21,8 +21,21 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+/**
+ * Next.js 15 는 dynamic 세그먼트를 URL-디코드하지 않는다.
+ * 한글 슬러그를 DB에 저장해 두었으므로 %-인코드 값을 받아 디코드한 뒤 비교한다.
+ */
+function decodeSlug(raw: string): string {
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
+
 export async function generateMetadata({ params }: Props) {
-  const { slug } = await params;
+  const { slug: raw } = await params;
+  const slug = decodeSlug(raw);
   const row = await db
     .select({ title: briefs.title, summary: briefs.summary })
     .from(briefs)
@@ -33,7 +46,8 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function BriefDetailPage({ params }: Props) {
-  const { slug } = await params;
+  const { slug: raw } = await params;
+  const slug = decodeSlug(raw);
   const brief = await db
     .select({
       id: briefs.id,

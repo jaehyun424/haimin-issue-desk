@@ -1,23 +1,51 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = "이해민 의원실 과방위 의정 브리프";
 
 /**
  * 홈 기본 OG 이미지 (1200x630).
- * Next.js App Router 가 자동으로 메타데이터에 hook-in 한다.
- * 한국어 본문 렌더링을 위해 Pretendard 700 를 jsdelivr CDN에서 로드.
+ * Satori 는 한글 폰트가 bundled 되어 있지 않으므로 Pretendard 를 fetch 해서
+ * 주입. 두 가중치를 병렬로 받고, 실패해도 페이지 렌더는 유지되도록 방어.
  */
-export default async function OpenGraphImage() {
-  const pretendard = await fetch(
-    "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff/Pretendard-Bold.woff",
-  ).then((r) => r.arrayBuffer());
+async function fetchFont(url: string): Promise<ArrayBuffer | null> {
+  try {
+    const res = await fetch(url, { cache: "force-cache" });
+    if (!res.ok) return null;
+    return await res.arrayBuffer();
+  } catch {
+    return null;
+  }
+}
 
-  const pretendardRegular = await fetch(
-    "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff/Pretendard-Regular.woff",
-  ).then((r) => r.arrayBuffer());
+export default async function OpenGraphImage() {
+  const [bold, regular] = await Promise.all([
+    fetchFont(
+      "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff/Pretendard-Bold.woff",
+    ),
+    fetchFont(
+      "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff/Pretendard-Regular.woff",
+    ),
+  ]);
+
+  const fonts = [
+    ...(bold
+      ? [{ name: "Pretendard" as const, data: bold, weight: 700 as const, style: "normal" as const }]
+      : []),
+    ...(regular
+      ? [
+          {
+            name: "Pretendard" as const,
+            data: regular,
+            weight: 400 as const,
+            style: "normal" as const,
+          },
+        ]
+      : []),
+  ];
 
   return new ImageResponse(
     (
@@ -31,7 +59,7 @@ export default async function OpenGraphImage() {
           padding: "80px 96px",
           background: "#0F1E3D",
           color: "#ffffff",
-          fontFamily: "Pretendard",
+          fontFamily: "Pretendard, system-ui, sans-serif",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
@@ -126,12 +154,6 @@ export default async function OpenGraphImage() {
         </div>
       </div>
     ),
-    {
-      ...size,
-      fonts: [
-        { name: "Pretendard", data: pretendard, weight: 700, style: "normal" },
-        { name: "Pretendard", data: pretendardRegular, weight: 400, style: "normal" },
-      ],
-    },
+    { ...size, fonts },
   );
 }

@@ -33,7 +33,14 @@ export default function TermsPage() {
       <section className="space-y-2">
         <h2>문의</h2>
         <p className="text-sm leading-relaxed">
-          오기·사실관계 정정 요청은 의원실 공식 이메일(운영 공지에서 안내)로 접수합니다.
+          오기·사실관계 정정 요청은{" "}
+          <a
+            href="mailto:haimin.office@assembly.go.kr"
+            className="underline underline-offset-4"
+          >
+            haimin.office@assembly.go.kr
+          </a>
+          <span className="text-muted-foreground"> (운영 준비 중)</span> 로 접수합니다.
         </p>
       </section>
     </article>

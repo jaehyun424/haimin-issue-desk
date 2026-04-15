@@ -25,9 +25,9 @@ export default function SourcePolicyPage() {
       <section className="space-y-2">
         <h2>2. 수집 주기</h2>
         <ul className="list-disc space-y-1 pl-6 text-sm leading-relaxed">
-          <li>뉴스·API·RSS: 30분 주기 자동 갱신</li>
-          <li>국회 일정·표결·발의안: 1일 4회 동기화 및 수동 동기화</li>
-          <li>회의록·발언 데이터: 1일 1회 동기화 및 수동 동기화</li>
+          <li>뉴스·API·RSS: 정기적으로 자동 동기화</li>
+          <li>국회 일정·표결·발의안: 정기적 자동 동기화 및 수동 동기화</li>
+          <li>회의록·발언 데이터: 정기적 자동 동기화 및 수동 동기화</li>
           <li>모든 소스는 마지막 동기화 시각을 기록합니다.</li>
         </ul>
       </section>

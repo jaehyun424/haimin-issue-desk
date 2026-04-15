@@ -17,7 +17,7 @@ export default function PrivacyPage() {
         <h2>1. 처리하는 개인정보 항목</h2>
         <ul className="list-disc space-y-1 pl-6 text-sm leading-relaxed">
           <li>
-            정책 제안 접수: [필수] 의견 내용 · [선택] 이름 또는 닉네임, 이메일, 소속
+            정책 제안 접수: [필수] 의견 내용 · [선택] 이름 또는 닉네임, 이메일
           </li>
           <li>
             자동 수집(서비스 운영용): 접속 시각, 브라우저 정보, IP의 해시 값(원문 IP는
@@ -66,14 +66,21 @@ export default function PrivacyPage() {
         <h2>6. 정보 주체의 권리</h2>
         <p className="text-sm leading-relaxed">
           정보 주체는 언제든지 본인의 개인정보 열람, 정정·삭제, 처리 정지를 요청할 수
-          있습니다. 요청은 아래 개인정보 보호 책임자의 이메일로 접수합니다.
+          있습니다. 요청은 아래 개인정보 보호 책임자에게 접수합니다.
         </p>
       </section>
 
       <section className="space-y-3">
         <h2>7. 개인정보 보호 책임자</h2>
         <p className="text-sm leading-relaxed">
-          이해민 의원실 정책 비서관. 문의: 의원실 공식 이메일(운영 공지에서 안내).
+          이해민 의원실 정책 비서관. 문의:{" "}
+          <a
+            href="mailto:haimin.office@assembly.go.kr"
+            className="underline underline-offset-4"
+          >
+            haimin.office@assembly.go.kr
+          </a>{" "}
+          <span className="text-muted-foreground">(운영 준비 중)</span>
         </p>
       </section>
     </article>

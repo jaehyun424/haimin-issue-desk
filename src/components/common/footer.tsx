@@ -17,9 +17,9 @@ export function SiteFooter() {
               이해민 의원실 · 과방위 의정 브리프
             </p>
             <p className="max-w-xl text-[13px] leading-relaxed text-muted-foreground">
-              과학기술정보방송통신위원회 관련 의정활동을 정리·공개하는 업무 도구입니다.
-              공개 브리프는 편집자·검토자의 확인을 거친 뒤 발행되며, 공식 출처 링크와
-              마지막 검증 시각을 함께 표기합니다.
+              과학기술정보방송통신위원회 관련 의정활동을 정리·공개하는 공식 브리프
+              페이지입니다. 공개 브리프는 편집자·검토자의 확인을 거친 뒤 발행되며,
+              공식 출처 링크와 마지막 검증 시각을 함께 표기합니다.
             </p>
           </div>
           <nav aria-label="정책 메뉴" className="flex flex-col gap-2 text-sm sm:items-end">

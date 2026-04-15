@@ -68,9 +68,7 @@ export default async function HomePage() {
       {/* Hero */}
       <section className="border-b border-border pb-10">
         <p className="kicker">과학기술정보방송통신위원회</p>
-        <h1 className="mt-4 max-w-3xl">
-          이해민 의원실의 과방위 의정 브리프
-        </h1>
+        <h1 className="mt-4 max-w-3xl">이해민 의원실의 과방위 의정 브리프</h1>
         <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-muted-foreground">
           국회 공식 데이터와 정부·유관기관 자료를 기반으로, 의원실 편집자가 작성하고
           검토자가 승인한 현안 정리를 공개합니다. 마지막 검증 시각과 출처 링크를 모든
@@ -111,8 +109,9 @@ export default async function HomePage() {
               <li key={b.id}>
                 <Link
                   href={`/brief/issues/${encodeURIComponent(b.slug)}`}
-                  className="group card-flat flex h-full flex-col gap-3 p-5"
+                  className="group card-flat flex h-full flex-col p-5"
                 >
+                  {/* 상단 메타: 날짜 + 카테고리 칩 */}
                   <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                     <time className="tabular-nums">
                       {formatKoreanDate(b.publishedAt)}
@@ -123,15 +122,25 @@ export default async function HomePage() {
                       </span>
                     ) : null}
                   </div>
-                  <h3 className="text-[1.0625rem] font-semibold leading-snug text-foreground group-hover:underline group-hover:underline-offset-4">
+
+                  {/* 제목: 가장 크고 굵게 */}
+                  <h3 className="mt-3 text-[1.25rem] font-semibold leading-[1.35] tracking-tight text-foreground group-hover:underline group-hover:underline-offset-4">
                     {b.title}
                   </h3>
-                  <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                    {truncate(b.summary, 160)}
+
+                  {/* 요약: 2줄 */}
+                  <p className="mt-2 line-clamp-2 text-[15px] leading-relaxed text-muted-foreground">
+                    {truncate(b.summary, 200)}
                   </p>
-                  <div className="mt-auto flex items-center justify-between pt-2 text-xs text-muted-foreground">
+
+                  {/* 하단: 출처 + 검증일 */}
+                  <div className="mt-auto flex items-center justify-between pt-4 text-xs text-muted-foreground">
                     <span>
-                      출처 <span className="font-semibold text-foreground">{b.sourceCount ?? 0}</span>건
+                      출처{" "}
+                      <span className="font-semibold text-foreground">
+                        {b.sourceCount ?? 0}
+                      </span>
+                      건
                     </span>
                     {b.lastVerifiedAt ? (
                       <span className="tabular-nums">
@@ -174,7 +183,7 @@ export default async function HomePage() {
           <div>
             <dt className="eyebrow">01. 출처 우선</dt>
             <dd className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              국회·정부 Open API 와 유관기관 보고서를 1순위 출처로 사용합니다.
+              국회·정부 Open API 와 유관기관 보고서를 주요 출처로 사용합니다.
             </dd>
           </div>
           <div>

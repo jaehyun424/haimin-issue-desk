@@ -38,8 +38,15 @@ export default function AccessibilityPage() {
       <section className="space-y-2">
         <h2>개선 요청</h2>
         <p className="text-sm leading-relaxed">
-          접근성 관련 불편을 겪으신 경우 의원실 공식 이메일(운영 공지에서 안내)로 알려
-          주시면 검토 후 개선합니다.
+          접근성 관련 불편을 겪으신 경우{" "}
+          <a
+            href="mailto:haimin.office@assembly.go.kr"
+            className="underline underline-offset-4"
+          >
+            haimin.office@assembly.go.kr
+          </a>
+          <span className="text-muted-foreground"> (운영 준비 중)</span> 로 알려 주시면
+          검토 후 개선합니다.
         </p>
       </section>
     </article>

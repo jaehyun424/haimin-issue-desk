@@ -5,11 +5,14 @@ import { usePathname } from "next/navigation";
 import {
   ClipboardList,
   Database,
+  ExternalLink,
   FileText,
   Flag,
   LayoutDashboard,
+  LogOut,
   MessageSquare,
   Settings,
+  User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -54,10 +57,13 @@ export function DeskSidebar({
 
   return (
     <aside className="flex h-dvh w-60 flex-col border-r border-border bg-card">
+      {/* 상단 타이틀 */}
       <div className="flex h-14 flex-none items-center gap-2 border-b border-border px-4">
         <Flag className="h-5 w-5 text-primary" aria-hidden />
         <span className="text-sm font-semibold">Desk</span>
       </div>
+
+      {/* 메뉴 */}
       <nav aria-label="Desk 메뉴" className="flex-1 overflow-y-auto p-2">
         <ul className="space-y-0.5">
           {items.map((item) => {
@@ -84,18 +90,44 @@ export function DeskSidebar({
           })}
         </ul>
       </nav>
-      <div className="mt-auto flex-none border-t border-border p-3 pb-safe text-xs text-muted-foreground">
-        <div className="truncate font-medium text-foreground">{userLabel}</div>
-        <div>{roleLabel}</div>
-        <form action="/api/auth/signout" method="post" className="mt-2">
-          <input type="hidden" name="callbackUrl" value="/" />
-          <button
-            type="submit"
-            className="text-xs underline underline-offset-2 hover:text-foreground"
+
+      {/* 하단 유저 + 홈/로그아웃 */}
+      <div className="mt-auto flex-none border-t border-border pb-safe">
+        {/* 유저 카드 */}
+        <div className="flex items-center gap-2.5 px-3 pb-3 pt-3">
+          <span
+            aria-hidden
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-muted/50 text-muted-foreground"
           >
-            로그아웃
-          </button>
-        </form>
+            <User className="h-4 w-4" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium text-foreground">{userLabel}</p>
+            <p className="text-xs text-muted-foreground">{roleLabel}</p>
+          </div>
+        </div>
+
+        {/* 아래 구분선 + 두 개의 액션 */}
+        <div className="grid grid-cols-2 gap-0 border-t border-border">
+          <Link
+            href="/"
+            onClick={onNavigate}
+            className="flex items-center justify-center gap-1.5 border-r border-border py-2.5 text-xs text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
+          >
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+            홈으로
+          </Link>
+          <form action="/api/auth/signout" method="post">
+            <input type="hidden" name="callbackUrl" value="/" />
+            <button
+              type="submit"
+              className="flex w-full items-center justify-center gap-1.5 py-2.5 text-xs text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
+            >
+              <LogOut className="h-3.5 w-3.5" aria-hidden />
+              로그아웃
+            </button>
+          </form>
+        </div>
       </div>
     </aside>
   );

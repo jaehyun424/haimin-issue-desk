@@ -132,7 +132,7 @@ export default function OpenGraphImage() {
             <span style={{ opacity: 0.5 }}>·</span>
             <span>정책 제안</span>
           </div>
-          <div>공식 출처 기반 · reviewer 승인 발행</div>
+          <div>공식 출처 기반 · 검토자 승인 발행</div>
         </div>
       </div>
     ),

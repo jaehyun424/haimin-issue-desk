@@ -96,9 +96,14 @@ export default async function VoicePage() {
             협업 · 인터뷰 · 자료 전달 요청
           </p>
           <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-            언론·기관·단체의 협업·인터뷰·자료 전달 요청은 이 양식이 아닌 의원실 공식
-            이메일로 직접 연락해 주세요. (공식 이메일은 추후 의원실 공지를 통해
-            안내드립니다.)
+            언론·기관·단체의 협업·인터뷰·자료 전달 요청은 이 양식이 아닌{" "}
+            <a
+              href="mailto:haimin.office@assembly.go.kr"
+              className="underline underline-offset-4"
+            >
+              haimin.office@assembly.go.kr
+            </a>
+            <span> (운영 준비 중)</span> 로 직접 연락해 주세요.
           </p>
         </div>
       </section>

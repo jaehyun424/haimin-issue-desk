@@ -9,8 +9,7 @@ import { DeskSidebar } from "./sidebar";
  * Desk 레이아웃 쉘.
  *
  * - 데스크톱(>= md): 사이드바는 sticky + h-dvh 로 페이지 스크롤에 고정.
- * - 모바일(< md): 사이드바는 기본 숨김. 상단바 햄버거로 드로어 형태로 열림.
- *   드로어 열린 상태에서 라우트가 바뀌면 자동으로 닫힌다.
+ * - 모바일(< md): 상단바 햄버거로 드로어 열림/닫힘. 라우트 변경 시 자동 닫힘.
  */
 export function DeskShell({
   children,
@@ -48,8 +47,8 @@ export function DeskShell({
 
   return (
     <div className="min-h-dvh bg-muted/20">
-      {/* 모바일 상단 바 */}
-      <div className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-background px-4 md:hidden">
+      {/* 모바일 상단 바 — 햄버거 + Desk 만. 심플하게. */}
+      <div className="sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b border-border bg-background px-4 md:hidden">
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -60,7 +59,8 @@ export function DeskShell({
         >
           {open ? <X className="h-4 w-4" aria-hidden /> : <Menu className="h-4 w-4" aria-hidden />}
         </button>
-        <span className="text-sm font-semibold">이해민 의원실 Desk</span>
+        <span className="text-sm font-semibold text-foreground">Desk</span>
+        <span className="w-9" aria-hidden />
       </div>
 
       <div className="flex">

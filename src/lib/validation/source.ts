@@ -7,7 +7,7 @@ export const SOURCE_TYPE_LABELS: Record<(typeof SOURCE_TYPES)[number], string> =
   assembly_api: "국회 API",
   news_api: "뉴스 API",
   rss: "RSS",
-  manual: "수기 입력",
+  manual: "편집 등록",
 };
 
 export const sourceCreateSchema = z.object({

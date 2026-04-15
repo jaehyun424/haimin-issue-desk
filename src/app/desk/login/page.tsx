@@ -44,7 +44,7 @@ export default async function LoginPage({ searchParams }: Props) {
           </div>
 
           <p className="mt-6 text-center text-xs text-muted-foreground">
-            로그인 시도는 감사 로그에 기록됩니다. 공개 페이지로{" "}
+            로그인 시도는 변경 내역에 기록됩니다. 공개 페이지로{" "}
             <Link className="underline underline-offset-4 hover:text-foreground" href="/">
               돌아가기
             </Link>

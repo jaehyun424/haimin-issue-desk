@@ -79,7 +79,7 @@ export default async function VoicePage() {
         <header className="border-b border-foreground/80 pb-2">
           <h2>제안 양식</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            필수 항목은 제출 유형·제목·내용·개인정보 수집 동의입니다.
+            필수 항목은 의견 유형·제목·내용·개인정보 수집 동의입니다.
           </p>
         </header>
         <div className="mt-6">
@@ -87,24 +87,6 @@ export default async function VoicePage() {
             categories={categories}
             turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
           />
-        </div>
-      </section>
-
-      <section aria-label="협업 요청 안내">
-        <div className="card-line p-5">
-          <p className="text-sm font-semibold text-foreground">
-            협업 · 인터뷰 · 자료 전달 요청
-          </p>
-          <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
-            언론·기관·단체의 협업·인터뷰·자료 전달 요청은 이 양식이 아닌{" "}
-            <a
-              href="mailto:haimin.office@assembly.go.kr"
-              className="underline underline-offset-4"
-            >
-              haimin.office@assembly.go.kr
-            </a>
-            <span> (운영 준비 중)</span> 로 직접 연락해 주세요.
-          </p>
         </div>
       </section>
     </div>

@@ -57,15 +57,15 @@ export default async function DeskSettingsPage() {
         <p className="kicker">설정</p>
         <h1 className="mt-2">운영 설정</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          feature flag · 카테고리 · 사용자 관리. 모든 변경은 감사 로그에 기록됩니다.
+          기능 설정 · 카테고리 · 사용자 권한 관리. 모든 변경은 변경 내역에 기록됩니다.
         </p>
       </header>
 
       <section>
         <header className="border-b border-foreground/80 pb-2">
-          <h2>기능 플래그</h2>
+          <h2>기능 설정</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            DB 값이 우선 적용되며, 토글 즉시 반영됩니다.
+            현재 저장된 설정이 기준이며, 변경하면 바로 적용됩니다.
           </p>
         </header>
         <Card className="mt-5">

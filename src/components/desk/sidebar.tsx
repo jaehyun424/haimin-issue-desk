@@ -1,7 +1,9 @@
 "use client";
 
+import { useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 import {
   ClipboardList,
   Database,
@@ -54,6 +56,7 @@ export function DeskSidebar({
 }) {
   const pathname = usePathname();
   const items = NAV.filter((i) => (i.voiceOnly ? voiceEnabled : true));
+  const [pendingSignOut, startSignOut] = useTransition();
 
   return (
     <aside className="flex h-dvh w-60 flex-col border-r border-border bg-card">
@@ -107,26 +110,29 @@ export function DeskSidebar({
           </div>
         </div>
 
-        {/* 구분선 + 세로 쌓은 2개 액션 */}
+        {/* 구분선 + 세로 쌓은 2개 유틸리티 액션 — 본 메뉴보다 무게감 낮춤 */}
         <div className="border-t border-border">
           <Link
             href="/"
             onClick={onNavigate}
-            className="flex items-center gap-2 border-b border-border px-4 py-3 text-sm text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
+            className="flex items-center gap-2 border-b border-border px-4 py-2.5 text-xs text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
           >
-            <ExternalLink className="h-4 w-4" aria-hidden />
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden />
             홈으로 돌아가기
           </Link>
-          <form action="/api/auth/signout" method="post">
-            <input type="hidden" name="callbackUrl" value="/" />
-            <button
-              type="submit"
-              className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
-            >
-              <LogOut className="h-4 w-4" aria-hidden />
-              로그아웃
-            </button>
-          </form>
+          <button
+            type="button"
+            disabled={pendingSignOut}
+            onClick={() =>
+              startSignOut(async () => {
+                await signOut({ callbackUrl: "/", redirect: true });
+              })
+            }
+            className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-xs text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground disabled:opacity-60"
+          >
+            <LogOut className="h-3.5 w-3.5" aria-hidden />
+            {pendingSignOut ? "로그아웃 중…" : "로그아웃"}
+          </button>
         </div>
       </div>
     </aside>

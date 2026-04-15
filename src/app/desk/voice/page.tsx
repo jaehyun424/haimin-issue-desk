@@ -68,15 +68,15 @@ export default async function DeskVoicePage({ searchParams }: Props) {
           </p>
         </div>
         <Badge variant={enabled ? "success" : "outline"} className="self-start">
-          공개 상태: {enabled ? "ON" : "OFF"}
+          공개 상태: {enabled ? "켜짐" : "꺼짐"}
         </Badge>
       </header>
 
       {!enabled ? (
         <Card>
           <CardContent className="p-5 text-sm text-muted-foreground sm:p-6">
-            voice 모듈이 현재 OFF 입니다. 접수 창구는 노출되지 않으며, 기존 데이터는
-            여기서만 조회됩니다.
+            정책 제안 접수가 현재 꺼짐 상태입니다. 접수 창구는 노출되지 않으며, 기존
+            데이터는 여기서만 조회됩니다.
           </CardContent>
         </Card>
       ) : null}

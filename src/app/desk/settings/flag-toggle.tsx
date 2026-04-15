@@ -25,7 +25,7 @@ export function FlagToggle({ flagKey, enabled, role }: Props) {
           enabled ? "bg-emerald-500/10 text-emerald-700" : "bg-muted text-muted-foreground"
         }`}
       >
-        {enabled ? "ON" : "OFF"}
+        {enabled ? "켜짐" : "꺼짐"}
       </span>
       <Button type="submit" size="sm" variant="outline" disabled={pending || !canManage}>
         {pending ? "…" : enabled ? "끄기" : "켜기"}

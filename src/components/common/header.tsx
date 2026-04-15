@@ -9,22 +9,32 @@ import { cn } from "@/lib/utils";
 interface NavItem {
   href: string;
   label: string;
+  match: (pathname: string) => boolean;
 }
 
 const NAV: NavItem[] = [
-  { href: "/brief", label: "브리프" },
-  { href: "/brief/activity", label: "의정활동" },
+  {
+    href: "/brief",
+    label: "브리프",
+    match: (p) => p === "/brief" || p === "/brief/issues" || p.startsWith("/brief/issues/"),
+  },
+  {
+    href: "/brief/activity",
+    label: "의정활동",
+    match: (p) => p === "/brief/activity",
+  },
 ];
 
-function isActive(pathname: string, href: string): boolean {
-  if (href === "/") return pathname === "/";
-  return pathname === href || pathname.startsWith(`${href}/`);
-}
+const VOICE_NAV: NavItem = {
+  href: "/voice",
+  label: "정책 제안",
+  match: (p) => p === "/voice" || p.startsWith("/voice/"),
+};
 
 export function SiteHeader({ voiceEnabled }: { voiceEnabled: boolean }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const items = voiceEnabled ? [...NAV, { href: "/voice", label: "정책 제안" }] : NAV;
+  const items = voiceEnabled ? [...NAV, VOICE_NAV] : NAV;
 
   // 라우트 변경 시 드로어 자동 닫기
   useEffect(() => {
@@ -62,7 +72,7 @@ export function SiteHeader({ voiceEnabled }: { voiceEnabled: boolean }) {
         {/* 데스크톱 네비 */}
         <nav aria-label="주요 메뉴" className="hidden items-center gap-5 sm:flex">
           {items.map((item) => {
-            const active = isActive(pathname, item.href);
+            const active = item.match(pathname);
             return (
               <Link
                 key={item.href}
@@ -137,7 +147,7 @@ export function SiteHeader({ voiceEnabled }: { voiceEnabled: boolean }) {
             <nav aria-label="모바일 주요 메뉴" className="container pb-6 pt-2">
               <ul className="divide-y divide-border">
                 {items.map((item) => {
-                  const active = isActive(pathname, item.href);
+                  const active = item.match(pathname);
                   return (
                     <li key={item.href}>
                       <Link

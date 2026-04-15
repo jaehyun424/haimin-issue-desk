@@ -18,8 +18,8 @@ export const VOICE_TYPE_LABELS: Record<(typeof VOICE_TYPES)[number], string> = {
 export const VOICE_TYPE_DESCRIPTIONS: Record<(typeof VOICE_TYPES)[number], string> = {
   policy_proposal: "과방위 소관 정책·법안에 대한 구체적 의견이나 제안",
   field_report: "산업·연구·교육 현장에서 겪은 제도·운영 이슈",
-  personal_grievance: "개인 피해/민원 — 아래 별도 안내 참조",
-  partnership: "언론·기관·단체의 연락 및 자료 전달",
+  personal_grievance: "개인 피해/민원 — 공식 민원 창구 이용 안내",
+  partnership: "언론·기관·단체의 연락 및 자료 전달 — 이메일 안내",
 };
 
 export const VOICE_STATUSES = ["new", "screened", "closed"] as const;

@@ -7,33 +7,35 @@ export const contentType = "image/png";
 export const alt = "이해민 의원실 과방위 의정 브리프";
 
 /**
- * Google Fonts 에서 Noto Sans KR 을 부를 때 "text" 파라미터로 서브셋만
- * 내려오도록 요청한다. 실패해도 렌더 자체는 유지되도록 폰트 유무를 방어.
+ * 홈 OG 이미지.
+ *
+ * Satori 가 한글 글리프를 기본 제공하지 않기 때문에, Google Fonts 의 css2 API 로
+ * Noto Sans KR 의 "text subset" 을 요청해 실제 WOFF/WOFF2 를 받는다. 실패하면
+ * 최소 ASCII 라인만 렌더되도록 방어. 이미지 자체는 항상 200 이어야 한다.
  */
+
 const OG_TEXT =
   "이해민 의원실 과방위 의정 브리프 과학기술정보방송통신위원회 현안을 사실 중심으로 공식 출처 기반 reviewer 승인 발행 브리프 의정활동 정책 제안";
 
-async function fetchGoogleFont(
-  family: string,
-  weight: number,
-  text: string,
-): Promise<ArrayBuffer | null> {
-  const cssUrl = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
-    family,
-  )}:wght@${weight}&text=${encodeURIComponent(text)}`;
+async function loadNotoSansKr(weight: 400 | 700): Promise<ArrayBuffer | null> {
+  const cssUrl = `https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@${weight}&text=${encodeURIComponent(
+    OG_TEXT,
+  )}`;
   try {
     const css = await fetch(cssUrl, {
       headers: {
+        // Google Fonts 는 UA 를 보고 woff2/ttf 를 분기하므로 최신 Chrome 값을 보낸다.
         "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36",
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122 Safari/537.36",
       },
-    }).then((r) => r.text());
-    const match = /src:\s*url\(([^)]+)\)/.exec(css);
+      cache: "force-cache",
+    }).then((r) => (r.ok ? r.text() : ""));
+    const match = /src:\s*url\(([^)]+)\)\s*format\(['"]woff2?['"]\)/i.exec(css);
     if (!match) return null;
-    const fontUrl = match[1]!.replace(/["']/g, "");
-    const res = await fetch(fontUrl);
-    if (!res.ok) return null;
-    return await res.arrayBuffer();
+    const fontUrl = match[1]!.replace(/^["']|["']$/g, "");
+    const fontRes = await fetch(fontUrl, { cache: "force-cache" });
+    if (!fontRes.ok) return null;
+    return await fontRes.arrayBuffer();
   } catch {
     return null;
   }
@@ -41,32 +43,20 @@ async function fetchGoogleFont(
 
 export default async function OpenGraphImage() {
   const [bold, regular] = await Promise.all([
-    fetchGoogleFont("Noto Sans KR", 700, OG_TEXT),
-    fetchGoogleFont("Noto Sans KR", 400, OG_TEXT),
+    loadNotoSansKr(700),
+    loadNotoSansKr(400),
   ]);
 
-  const fonts = [
-    ...(bold
-      ? [
-          {
-            name: "Noto Sans KR" as const,
-            data: bold,
-            weight: 700 as const,
-            style: "normal" as const,
-          },
-        ]
-      : []),
-    ...(regular
-      ? [
-          {
-            name: "Noto Sans KR" as const,
-            data: regular,
-            weight: 400 as const,
-            style: "normal" as const,
-          },
-        ]
-      : []),
-  ];
+  const fonts: Array<{
+    name: string;
+    data: ArrayBuffer;
+    weight: 400 | 700;
+    style: "normal";
+  }> = [];
+  if (bold) fonts.push({ name: "Noto", data: bold, weight: 700, style: "normal" });
+  if (regular) fonts.push({ name: "Noto", data: regular, weight: 400, style: "normal" });
+
+  const fontFamily = fonts.length > 0 ? "Noto, system-ui, sans-serif" : "system-ui, sans-serif";
 
   return new ImageResponse(
     (
@@ -80,7 +70,7 @@ export default async function OpenGraphImage() {
           padding: "80px 96px",
           background: "#0F1E3D",
           color: "#ffffff",
-          fontFamily: "Noto Sans KR, system-ui, sans-serif",
+          fontFamily,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
@@ -175,6 +165,9 @@ export default async function OpenGraphImage() {
         </div>
       </div>
     ),
-    { ...size, fonts },
+    {
+      ...size,
+      fonts: fonts.length > 0 ? fonts : undefined,
+    },
   );
 }

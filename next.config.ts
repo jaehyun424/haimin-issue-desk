@@ -12,6 +12,10 @@ const config: NextConfig = {
     },
   },
   serverExternalPackages: ["postgres", "bcryptjs"],
+  // OG 라우트에 Pretendard 번들 폰트를 명시적으로 포함시킨다.
+  outputFileTracingIncludes: {
+    "/opengraph-image": ["./src/app/Pretendard-Bold.otf"],
+  },
   async headers() {
     return [
       {

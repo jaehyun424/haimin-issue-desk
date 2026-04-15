@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
 export const runtime = "nodejs";
@@ -9,15 +9,30 @@ export const contentType = "image/png";
 export const alt = "이해민 의원실 과방위 의정 브리프";
 
 /**
- * OG 이미지 (1200x630). Pretendard-Bold 는 이 파일과 같은 디렉토리에 번들된
- * OTF 를 읽어서 사용. Next.js 가 `import.meta.url` 레퍼런스를 build trace 로
- * 감지해 serverless 번들에 포함시킨다.
+ * OG 이미지 (1200x630). Pretendard-Bold 를 `src/app/Pretendard-Bold.otf` 에서
+ * 읽는다. 모듈 스코프가 아니라 함수 안에서 지연 로드하고 한 번만 캐시하여
+ * build 트레이스 단계에서 읽기 실패가 발생하지 않도록 한다.
  */
-const PRETENDARD_BOLD = readFileSync(
-  fileURLToPath(new URL("./Pretendard-Bold.otf", import.meta.url)),
-);
+let CACHED_FONT: Buffer | null = null;
+
+function loadFont(): Buffer | null {
+  if (CACHED_FONT) return CACHED_FONT;
+  try {
+    const p = join(process.cwd(), "src/app/Pretendard-Bold.otf");
+    CACHED_FONT = readFileSync(p);
+    return CACHED_FONT;
+  } catch {
+    return null;
+  }
+}
 
 export default function OpenGraphImage() {
+  const font = loadFont();
+  const fonts = font
+    ? [{ name: "Pretendard", data: font, weight: 700 as const, style: "normal" as const }]
+    : undefined;
+  const fontFamily = font ? "Pretendard" : "system-ui, sans-serif";
+
   return new ImageResponse(
     (
       <div
@@ -30,7 +45,7 @@ export default function OpenGraphImage() {
           padding: "80px 96px",
           background: "#0F1E3D",
           color: "#ffffff",
-          fontFamily: "Pretendard",
+          fontFamily,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
@@ -121,16 +136,6 @@ export default function OpenGraphImage() {
         </div>
       </div>
     ),
-    {
-      ...size,
-      fonts: [
-        {
-          name: "Pretendard",
-          data: PRETENDARD_BOLD,
-          weight: 700,
-          style: "normal",
-        },
-      ],
-    },
+    { ...size, fonts },
   );
 }

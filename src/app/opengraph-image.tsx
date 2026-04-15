@@ -7,13 +7,31 @@ export const contentType = "image/png";
 export const alt = "이해민 의원실 과방위 의정 브리프";
 
 /**
- * 홈 기본 OG 이미지 (1200x630).
- * Satori 는 한글 폰트가 bundled 되어 있지 않으므로 Pretendard 를 fetch 해서
- * 주입. 두 가중치를 병렬로 받고, 실패해도 페이지 렌더는 유지되도록 방어.
+ * Google Fonts 에서 Noto Sans KR 을 부를 때 "text" 파라미터로 서브셋만
+ * 내려오도록 요청한다. 실패해도 렌더 자체는 유지되도록 폰트 유무를 방어.
  */
-async function fetchFont(url: string): Promise<ArrayBuffer | null> {
+const OG_TEXT =
+  "이해민 의원실 과방위 의정 브리프 과학기술정보방송통신위원회 현안을 사실 중심으로 공식 출처 기반 reviewer 승인 발행 브리프 의정활동 정책 제안";
+
+async function fetchGoogleFont(
+  family: string,
+  weight: number,
+  text: string,
+): Promise<ArrayBuffer | null> {
+  const cssUrl = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
+    family,
+  )}:wght@${weight}&text=${encodeURIComponent(text)}`;
   try {
-    const res = await fetch(url, { cache: "force-cache" });
+    const css = await fetch(cssUrl, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36",
+      },
+    }).then((r) => r.text());
+    const match = /src:\s*url\(([^)]+)\)/.exec(css);
+    if (!match) return null;
+    const fontUrl = match[1]!.replace(/["']/g, "");
+    const res = await fetch(fontUrl);
     if (!res.ok) return null;
     return await res.arrayBuffer();
   } catch {
@@ -23,22 +41,25 @@ async function fetchFont(url: string): Promise<ArrayBuffer | null> {
 
 export default async function OpenGraphImage() {
   const [bold, regular] = await Promise.all([
-    fetchFont(
-      "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff/Pretendard-Bold.woff",
-    ),
-    fetchFont(
-      "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff/Pretendard-Regular.woff",
-    ),
+    fetchGoogleFont("Noto Sans KR", 700, OG_TEXT),
+    fetchGoogleFont("Noto Sans KR", 400, OG_TEXT),
   ]);
 
   const fonts = [
     ...(bold
-      ? [{ name: "Pretendard" as const, data: bold, weight: 700 as const, style: "normal" as const }]
+      ? [
+          {
+            name: "Noto Sans KR" as const,
+            data: bold,
+            weight: 700 as const,
+            style: "normal" as const,
+          },
+        ]
       : []),
     ...(regular
       ? [
           {
-            name: "Pretendard" as const,
+            name: "Noto Sans KR" as const,
             data: regular,
             weight: 400 as const,
             style: "normal" as const,
@@ -59,7 +80,7 @@ export default async function OpenGraphImage() {
           padding: "80px 96px",
           background: "#0F1E3D",
           color: "#ffffff",
-          fontFamily: "Pretendard, system-ui, sans-serif",
+          fontFamily: "Noto Sans KR, system-ui, sans-serif",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 20 }}>

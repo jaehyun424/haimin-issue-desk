@@ -15,5 +15,10 @@
       ]
     }
   ],
-  "crons": []
+  "crons": [
+    {
+      "path": "/api/cron/collect",
+      "schedule": "0 22 * * *"
+    }
+  ]
 }

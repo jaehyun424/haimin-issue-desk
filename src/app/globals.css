@@ -2,63 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
+/* --------------------------------------------------------------------------
+ * 공공기관 톤의 절제된 팔레트 — 정책브리핑/국회 홈페이지 참고
+ * 원칙:
+ *  - 흰 배경 + 짙은 네이비 텍스트(near-black) + 미색(subtle) 보조
+ *  - 강조는 선(border) 과 한 가지 액센트 네이비로
+ *  - 그라데이션·블러·글로우 사용하지 않음
+ *  - 그림자는 거의 쓰지 않음 (focus 상태 외엔 선으로 위계 표현)
+ * ------------------------------------------------------------------------ */
 @layer base {
   :root {
-    --background: 210 30% 99%;
-    --foreground: 215 32% 12%;
+    --background: 0 0% 100%;
+    --foreground: 220 30% 12%;      /* near-black navy */
     --card: 0 0% 100%;
-    --card-foreground: 215 32% 12%;
+    --card-foreground: 220 30% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 215 32% 12%;
-    --primary: 222 62% 26%;
+    --popover-foreground: 220 30% 12%;
+
+    --primary: 220 64% 22%;         /* deep gov navy */
     --primary-foreground: 0 0% 100%;
-    --secondary: 215 20% 96%;
-    --secondary-foreground: 215 32% 12%;
-    --muted: 215 20% 96%;
-    --muted-foreground: 215 14% 42%;
-    --accent: 215 86% 96%;
-    --accent-foreground: 222 62% 26%;
-    --destructive: 0 72% 45%;
+    --secondary: 220 16% 96%;
+    --secondary-foreground: 220 30% 12%;
+
+    --muted: 220 16% 97%;
+    --muted-foreground: 220 10% 40%;
+
+    --accent: 220 20% 95%;
+    --accent-foreground: 220 64% 22%;
+
+    --destructive: 0 68% 42%;
     --destructive-foreground: 0 0% 100%;
-    --border: 215 20% 90%;
-    --input: 215 20% 88%;
-    --ring: 222 62% 40%;
-    --radius: 0.625rem;
 
-    /* KRDS 감성 팔레트 */
-    --gov-navy: 222 62% 18%;
-    --gov-navy-soft: 222 40% 32%;
-    --gov-blue: 218 82% 46%;
-    --gov-seal: 218 72% 30%;
-    --gov-paper: 36 30% 97%;
+    --border: 220 14% 88%;
+    --input: 220 14% 82%;
+    --ring: 220 64% 30%;
 
-    /* 섀도: 명함처럼 미세하고 층위가 느껴지게 */
-    --shadow-flat: 0 1px 0 rgba(15, 23, 42, 0.04);
-    --shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.04);
-    --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -8px rgba(15, 23, 42, 0.08);
-    --shadow-lift: 0 2px 4px rgba(15, 23, 42, 0.06), 0 16px 40px -12px rgba(15, 23, 42, 0.16);
-  }
+    --radius: 0.375rem;
 
-  .dark {
-    --background: 215 32% 8%;
-    --foreground: 0 0% 98%;
-    --card: 215 32% 11%;
-    --card-foreground: 0 0% 98%;
-    --popover: 215 32% 11%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 218 72% 66%;
-    --primary-foreground: 215 32% 8%;
-    --secondary: 215 22% 18%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 215 22% 18%;
-    --muted-foreground: 215 14% 72%;
-    --accent: 215 22% 18%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 72% 45%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 215 22% 22%;
-    --input: 215 22% 22%;
-    --ring: 218 72% 66%;
+    --gov-navy: 220 64% 22%;
+    --gov-line: 220 14% 88%;
   }
 
   * {
@@ -73,11 +55,7 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-feature-settings:
-      "ss03" on,
-      "cv11" on,
-      "ss04" on;
-    letter-spacing: -0.005em;
+    font-feature-settings: "ss03" on, "cv11" on;
   }
 
   :focus-visible {
@@ -85,105 +63,54 @@
   }
 
   ::selection {
-    background: hsl(var(--accent));
-    color: hsl(var(--accent-foreground));
+    background: hsl(220 64% 22% / 0.18);
   }
 
-  h1, h2, h3, h4 {
-    @apply font-semibold text-foreground;
-    letter-spacing: -0.02em;
-  }
+  /* 명확한 타이포 위계 */
+  h1 { @apply text-[2rem] sm:text-[2.25rem] font-semibold leading-[1.25]; letter-spacing: -0.02em; }
+  h2 { @apply text-[1.5rem] font-semibold leading-[1.3]; letter-spacing: -0.015em; }
+  h3 { @apply text-[1.125rem] font-semibold leading-[1.35]; letter-spacing: -0.01em; }
+  h4 { @apply text-[0.9375rem] font-semibold; }
 }
 
 /* ---- 유틸리티 ---- */
 @layer utilities {
-  .shadow-flat { box-shadow: var(--shadow-flat); }
-  .shadow-soft { box-shadow: var(--shadow-soft); }
-  .shadow-card { box-shadow: var(--shadow-card); }
-  .shadow-lift { box-shadow: var(--shadow-lift); }
-
-  .gradient-paper {
-    background:
-      radial-gradient(1200px 400px at 10% -20%, hsla(var(--accent) / 0.7), transparent 60%),
-      radial-gradient(800px 300px at 90% -10%, hsla(var(--gov-blue) / 0.08), transparent 60%),
-      hsl(var(--background));
-  }
-
-  .gov-seal {
-    background: hsl(var(--gov-navy));
-    color: #fff;
-  }
+  .section-divider { @apply border-b border-border; }
+  .gov-strip { @apply h-1 w-full; background: hsl(var(--gov-navy)); }
 }
 
 /* ---- 공용 컴포넌트 클래스 ---- */
 @layer components {
-  .card-line {
-    @apply rounded-xl border border-border bg-card;
-    box-shadow: var(--shadow-flat);
-  }
-  .card-float {
-    @apply rounded-xl border border-border bg-card transition-all duration-200;
-    box-shadow: var(--shadow-soft);
-  }
-  .card-float:hover {
-    box-shadow: var(--shadow-card);
-    transform: translateY(-1px);
-    border-color: hsl(var(--gov-blue) / 0.35);
-  }
-  .link-underline {
-    @apply underline decoration-muted-foreground/30 underline-offset-[5px] transition-colors hover:decoration-foreground;
-  }
+  .card-line { @apply rounded border border-border bg-card; }
+  .card-flat { @apply rounded border border-border bg-card transition-colors; }
+  .card-flat:hover { @apply border-foreground/30; }
+  .link-subtle { @apply text-muted-foreground transition-colors hover:text-foreground; }
   .btn-chip {
-    @apply inline-flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:bg-accent hover:text-accent-foreground;
+    @apply inline-flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground;
   }
-  .stat-tile {
-    @apply rounded-xl border border-border bg-card p-5 transition-colors;
-    box-shadow: var(--shadow-flat);
+  .stat-tile { @apply rounded border border-border bg-card p-5; }
+  .eyebrow { @apply text-xs font-semibold uppercase tracking-[0.12em] text-primary; }
+  .kicker {
+    @apply inline-flex items-center border-l-2 border-primary pl-3 text-xs font-semibold uppercase tracking-[0.14em] text-primary;
   }
-  .stat-tile:hover {
-    border-color: hsl(var(--gov-blue) / 0.35);
+  .table-gov th {
+    @apply border-b-2 border-foreground/80 bg-muted/40 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground;
+  }
+  .table-gov td {
+    @apply border-b border-border px-3 py-3 align-middle;
   }
 }
 
 /* ---- Brief markdown prose ---- */
-.prose-brief {
-  @apply text-[17px] leading-[1.85] text-foreground;
-  word-break: keep-all;
-}
-.prose-brief h2 {
-  @apply relative mt-12 mb-4 pl-4 text-2xl font-semibold;
-}
-.prose-brief h2::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.375rem;
-  bottom: 0.375rem;
-  width: 3px;
-  border-radius: 2px;
-  background: hsl(var(--gov-blue));
-}
-.prose-brief h3 {
-  @apply mt-8 mb-3 text-xl font-semibold;
-}
-.prose-brief p {
-  @apply my-4;
-}
-.prose-brief ul {
-  @apply my-4 list-disc space-y-2 pl-6 marker:text-muted-foreground;
-}
-.prose-brief ol {
-  @apply my-4 list-decimal space-y-2 pl-6 marker:text-muted-foreground;
-}
-.prose-brief a {
-  @apply text-primary underline decoration-primary/40 underline-offset-4 hover:decoration-primary;
-}
+.prose-brief { @apply text-[17px] leading-[1.85] text-foreground; word-break: keep-all; }
+.prose-brief h2 { @apply mt-10 mb-3 border-t border-border pt-8 text-[1.5rem] font-semibold; }
+.prose-brief h3 { @apply mt-7 mb-2 text-[1.125rem] font-semibold; }
+.prose-brief p { @apply my-4; }
+.prose-brief ul { @apply my-4 list-disc space-y-1.5 pl-5 marker:text-muted-foreground; }
+.prose-brief ol { @apply my-4 list-decimal space-y-1.5 pl-5 marker:text-muted-foreground; }
+.prose-brief a { @apply text-primary underline decoration-primary/50 underline-offset-4 hover:decoration-primary; }
 .prose-brief blockquote {
-  @apply my-6 rounded-lg border-l-4 border-primary/60 bg-accent/60 px-5 py-3 text-accent-foreground;
+  @apply my-5 border-l-2 border-foreground/40 bg-muted/40 px-4 py-2.5 text-muted-foreground;
 }
-.prose-brief code {
-  @apply rounded bg-muted px-1.5 py-0.5 font-mono text-[0.9em];
-}
-.prose-brief strong {
-  @apply font-semibold text-foreground;
-}
+.prose-brief code { @apply rounded bg-muted px-1.5 py-0.5 font-mono text-[0.9em]; }
+.prose-brief strong { @apply font-semibold text-foreground; }

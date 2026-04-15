@@ -13,13 +13,20 @@ import {
   VOICE_TYPE_LABELS,
 } from "@/lib/validation/voice";
 import { submitVoiceAction } from "@/app/(public)/voice/actions";
+import { TurnstileWidget } from "./turnstile-widget";
 
 interface Option {
   id: string;
   name: string;
 }
 
-export function VoiceForm({ categories }: { categories: Option[] }) {
+export function VoiceForm({
+  categories,
+  turnstileSiteKey,
+}: {
+  categories: Option[];
+  turnstileSiteKey?: string;
+}) {
   const [state, formAction, pending] = useActionState(submitVoiceAction, null as unknown);
   const err = (state as { error?: string } | null)?.error;
 
@@ -36,7 +43,7 @@ export function VoiceForm({ categories }: { categories: Option[] }) {
           {VOICE_TYPES.map((t) => (
             <label
               key={t}
-              className="flex cursor-pointer items-start gap-2 rounded-md border border-input p-3 hover:bg-accent"
+              className="flex cursor-pointer items-start gap-2 rounded border border-input p-3 hover:bg-accent"
             >
               <input type="radio" name="type" value={t} required className="mt-1" />
               <span className="flex flex-col text-sm">
@@ -56,7 +63,7 @@ export function VoiceForm({ categories }: { categories: Option[] }) {
           id="voice-category"
           name="categoryId"
           defaultValue=""
-          className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+          className="h-10 w-full rounded border border-input bg-background px-3 text-sm"
         >
           <option value="">선택 안 함</option>
           {categories.map((c) => (
@@ -94,7 +101,7 @@ export function VoiceForm({ categories }: { categories: Option[] }) {
         </div>
       </div>
 
-      <div className="space-y-2 rounded-md border border-border bg-muted/20 p-4 text-sm">
+      <div className="space-y-2 rounded border border-border bg-muted/30 p-4 text-sm">
         <label className="flex items-start gap-2">
           <Checkbox name="consentRequired" required />
           <span>
@@ -114,6 +121,8 @@ export function VoiceForm({ categories }: { categories: Option[] }) {
         </label>
       </div>
 
+      <TurnstileWidget siteKey={turnstileSiteKey} />
+
       {err ? (
         <Alert variant="destructive">
           <AlertTitle>전송하지 못했습니다</AlertTitle>
@@ -121,7 +130,7 @@ export function VoiceForm({ categories }: { categories: Option[] }) {
         </Alert>
       ) : null}
 
-      <Button type="submit" size="lg" disabled={pending}>
+      <Button type="submit" disabled={pending}>
         {pending ? "전송 중…" : "의견 보내기"}
       </Button>
       <p className="text-xs text-muted-foreground">

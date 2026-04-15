@@ -2,9 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { and, desc, eq } from "drizzle-orm";
-import { Badge } from "@/components/ui/badge";
 import { FreshnessIndicator } from "@/components/common/freshness-indicator";
-import { Section } from "@/components/common/section";
 import { SourceList } from "@/components/common/source-list";
 import { db } from "@/lib/db";
 import {
@@ -14,7 +12,7 @@ import {
   issues,
   sourceDocuments,
 } from "@/lib/db/schema";
-import { formatKoreanDateTime } from "@/lib/utils";
+import { formatKoreanDate, formatKoreanDateTime } from "@/lib/utils";
 import { renderMarkdown } from "@/lib/markdown";
 
 export const dynamic = "force-dynamic";
@@ -85,11 +83,11 @@ export default async function BriefDetailPage({ params }: Props) {
   const rendered = renderMarkdown(brief.bodyMd);
 
   return (
-    <article className="mx-auto max-w-3xl space-y-10">
-      <nav className="text-sm">
+    <article className="mx-auto max-w-3xl">
+      <nav className="mb-6 text-sm">
         <Link
           href="/brief"
-          className="inline-flex items-center gap-1 text-muted-foreground transition-colors hover:text-foreground"
+          className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft className="h-4 w-4" aria-hidden />
           브리프 목록
@@ -99,24 +97,26 @@ export default async function BriefDetailPage({ params }: Props) {
       <header className="space-y-4 border-b border-border pb-8">
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           {brief.categoryName ? (
-            <Badge variant="outline" className="font-medium">
+            <span className="border-l-2 border-primary pl-2 font-medium text-foreground">
               {brief.categoryName}
-            </Badge>
+            </span>
           ) : null}
-          <FreshnessIndicator label="발행" value={brief.publishedAt} />
+          <span aria-hidden>·</span>
+          <time>{formatKoreanDate(brief.publishedAt)} 발행</time>
           {brief.lastVerifiedAt ? (
-            <FreshnessIndicator
-              label="마지막 검증"
-              value={brief.lastVerifiedAt}
-              variant="absolute"
-            />
+            <>
+              <span aria-hidden>·</span>
+              <span>
+                마지막 검증 {formatKoreanDate(brief.lastVerifiedAt)}
+              </span>
+            </>
           ) : null}
           <span aria-hidden>·</span>
           <span>
             출처 <span className="font-semibold text-foreground">{sources.length}</span>건
           </span>
         </div>
-        <h1 className="text-balance text-[2.25rem] font-semibold leading-[1.25] tracking-tight sm:text-4xl">
+        <h1 className="text-balance leading-[1.3]">
           {brief.title}
         </h1>
         <p className="text-[17px] leading-relaxed text-muted-foreground">
@@ -125,18 +125,24 @@ export default async function BriefDetailPage({ params }: Props) {
       </header>
 
       <div
-        className="prose-brief"
+        className="prose-brief mt-10"
         // 본문 Markdown → 허용된 제한 HTML. renderMarkdown 내부에서 sanitize.
         dangerouslySetInnerHTML={{ __html: rendered }}
       />
 
-      <Section title="참고한 출처" description="공식·준공식 자료를 우선 배치했습니다.">
-        <div className="card-line p-6">
-          <SourceList items={sources} />
+      <section className="mt-12 border-t border-border pt-8">
+        <h2 className="mb-4">참고한 출처</h2>
+        <SourceList items={sources} />
+        <div className="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
+          <FreshnessIndicator
+            label="마지막 검증"
+            value={brief.lastVerifiedAt ?? brief.publishedAt}
+            variant="absolute"
+          />
         </div>
-      </Section>
+      </section>
 
-      <footer className="rounded-xl border border-border bg-muted/30 p-5 text-sm text-muted-foreground">
+      <footer className="mt-10 border-t border-border pt-5 text-[13px] text-muted-foreground">
         본 브리프는 공식 자료를 기반으로 의원실이 정리한 것이며, 마지막 검증 시각 이후
         사실관계는 변동될 수 있습니다. 마지막 검증:{" "}
         <span className="font-medium text-foreground">

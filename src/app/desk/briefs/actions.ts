@@ -12,6 +12,7 @@ import { koreanSlug } from "@/lib/utils";
 import { briefCreateSchema, briefUpdateSchema, BRIEF_STATUSES } from "@/lib/validation/brief";
 import { uuid } from "@/lib/validation/common";
 import { FLAG, getFlag } from "@/lib/feature-flags";
+import { checkPublishable } from "@/lib/publish-guards";
 
 async function generateBriefSlug(title: string): Promise<string> {
   const base = koreanSlug(title) || "brief";
@@ -133,30 +134,21 @@ export async function transitionBriefAction(_prev: unknown, fd: FormData) {
   if (!current) return { ok: false, error: "존재하지 않는 브리프" } as const;
 
   if (parsed.data.status === "published") {
-    // 발행 조건 검증:
-    //  1) 요약/본문 최소 길이
-    //  2) 최소 1건의 출처 연결
-    //  3) election_mode ON 이면 reviewer 가 아닌 draft 상태에서 바로 발행 금지
-    if ((current.summary?.length ?? 0) < 10 || (current.bodyMd?.length ?? 0) < 20) {
-      return { ok: false, error: "요약/본문이 너무 짧습니다." } as const;
-    }
     const [countRow] = await db
       .select({ count: sql<number>`count(*)::int` })
       .from(issueSourceLinks)
       .where(eq(issueSourceLinks.issueId, current.issueId));
     const sourceCount = countRow?.count ?? 0;
-    if (sourceCount < 1) {
-      return {
-        ok: false,
-        error: "공개 브리프는 최소 1건 이상의 연결 출처가 필요합니다.",
-      } as const;
-    }
     const electionOn = await getFlag(FLAG.ELECTION_MODE);
-    if (electionOn && current.status !== "review") {
-      return {
-        ok: false,
-        error: "선거모드 동안에는 reviewer 검토(review 상태)를 거쳐야 발행할 수 있습니다.",
-      } as const;
+    const check = checkPublishable({
+      summaryLength: current.summary?.length ?? 0,
+      bodyLength: current.bodyMd?.length ?? 0,
+      sourceCount,
+      electionModeOn: electionOn,
+      currentStatus: current.status,
+    });
+    if (!check.ok) {
+      return { ok: false, error: check.message } as const;
     }
   }
 

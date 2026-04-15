@@ -85,7 +85,10 @@ export default async function VoicePage() {
         </AlertDescription>
       </Alert>
 
-      <VoiceForm categories={categories} />
+      <VoiceForm
+        categories={categories}
+        turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+      />
     </div>
   );
 }

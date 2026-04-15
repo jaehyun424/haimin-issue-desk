@@ -1,20 +1,14 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  ClipboardList,
-  Database,
-  FileText,
-} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { desc, eq, gte, inArray, sql } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/common/empty-state";
-import { Section } from "@/components/common/section";
 import { FreshnessIndicator } from "@/components/common/freshness-indicator";
 import { IssueStatusBadge } from "@/components/common/status-badge";
 import { db } from "@/lib/db";
 import { briefs, issues, sourceDocuments } from "@/lib/db/schema";
 import { requireDeskSession } from "@/lib/auth/session";
-import { formatKoreanDateTime } from "@/lib/utils";
+import { formatKoreanDate, formatKoreanDateTime } from "@/lib/utils";
 
 export const metadata = { title: "Desk 대시보드" };
 
@@ -62,110 +56,89 @@ export default async function DeskHome() {
     ]);
 
   const now = new Date();
-  const hour = now.getHours();
-  const greeting =
-    hour < 6 ? "새벽에 고생 많으십니다" : hour < 12 ? "좋은 아침입니다" : hour < 18 ? "오늘도 수고 많으십니다" : "오늘 하루 마무리하세요";
 
   const stats = [
     {
       label: "최근 7일 수집 소스",
       value: newSources,
       hint: "자동 파이프라인 + 수기 입력 합계",
-      icon: Database,
       href: "/desk/sources",
     },
     {
       label: "검토 대기 이슈",
       value: reviewingIssues,
       hint: "상태: 신규 · 검토중",
-      icon: ClipboardList,
       href: "/desk/issues?status=reviewing",
     },
     {
       label: "발행 대기 브리프",
       value: readyBriefs,
       hint: "reviewer 승인 대기",
-      icon: FileText,
       href: "/desk/briefs?status=review",
     },
   ];
 
   return (
     <div className="space-y-10">
-      <header className="flex flex-wrap items-end justify-between gap-4">
+      <header className="flex flex-wrap items-end justify-between gap-3 border-b border-border pb-6">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
-            Desk
-          </p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight">
-            {greeting}, {session.user.name || "담당자"}님
-          </h1>
+          <p className="kicker">Desk</p>
+          <h1 className="mt-2">대시보드</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            현재 날짜 · {formatKoreanDateTime(now).split(" ")[0]}
+            {formatKoreanDate(now)} · {session.user.name || "담당자"}님 ({session.user.role})
           </p>
         </div>
-        <Button asChild size="lg" className="shadow-soft">
-          <Link href="/desk/issues/new">
-            새 이슈 만들기
-            <ArrowRight className="ml-1 h-4 w-4" aria-hidden />
-          </Link>
+        <Button asChild>
+          <Link href="/desk/issues/new">새 이슈 만들기</Link>
         </Button>
       </header>
 
       <section className="grid gap-4 sm:grid-cols-3">
-        {stats.map((s) => {
-          const Icon = s.icon;
-          return (
-            <Link key={s.label} href={s.href} className="stat-tile group">
-              <div className="flex items-start justify-between">
-                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-                  <Icon className="h-4 w-4" aria-hidden />
-                </span>
-                <ArrowRight
-                  className="h-4 w-4 text-muted-foreground opacity-0 transition-all group-hover:opacity-100 group-hover:text-primary"
-                  aria-hidden
-                />
-              </div>
-              <p className="mt-5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+        {stats.map((s) => (
+          <Link key={s.label} href={s.href} className="stat-tile hover:border-foreground/30">
+            <div className="flex items-start justify-between">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 {s.label}
               </p>
-              <p className="mt-1 text-[2.25rem] font-semibold leading-none tracking-tight tabular-nums">
-                {s.value}
-              </p>
-              <p className="mt-2 text-xs text-muted-foreground">{s.hint}</p>
-            </Link>
-          );
-        })}
+              <ChevronRight className="h-4 w-4 text-muted-foreground" aria-hidden />
+            </div>
+            <p className="mt-4 text-[2rem] font-semibold leading-none tabular-nums">
+              {s.value}
+            </p>
+            <p className="mt-2 text-xs text-muted-foreground">{s.hint}</p>
+          </Link>
+        ))}
       </section>
 
-      <Section
-        title="최근 이슈"
-        actions={
-          <Button asChild size="sm" variant="ghost" className="gap-1">
-            <Link href="/desk/issues">
-              전체 보기
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </Link>
-          </Button>
-        }
-      >
+      <section>
+        <header className="flex items-end justify-between border-b border-foreground/80 pb-2">
+          <h2>최근 이슈</h2>
+          <Link
+            href="/desk/issues"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            전체 →
+          </Link>
+        </header>
         {latestIssues.length === 0 ? (
-          <EmptyState
-            title="아직 이슈가 없습니다"
-            description="수집 문서에서 이슈를 생성하거나, 직접 새 이슈를 등록해 보세요."
-            action={
-              <Button asChild size="sm">
-                <Link href="/desk/issues/new">새 이슈 만들기</Link>
-              </Button>
-            }
-          />
+          <div className="pt-6">
+            <EmptyState
+              title="아직 이슈가 없습니다"
+              description="수집 문서에서 이슈를 생성하거나, 직접 새 이슈를 등록해 보세요."
+              action={
+                <Button asChild size="sm">
+                  <Link href="/desk/issues/new">새 이슈 만들기</Link>
+                </Button>
+              }
+            />
+          </div>
         ) : (
-          <ul className="divide-y divide-border rounded-xl border border-border bg-card shadow-flat">
+          <ul className="divide-y divide-border">
             {latestIssues.map((i) => (
               <li key={i.id}>
                 <Link
                   href={`/desk/issues/${i.id}`}
-                  className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 transition-colors hover:bg-muted/40"
+                  className="flex flex-wrap items-center justify-between gap-3 py-3 transition-colors hover:bg-muted/40"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[15px] font-medium">{i.title}</p>
@@ -179,28 +152,26 @@ export default async function DeskHome() {
             ))}
           </ul>
         )}
-      </Section>
+      </section>
 
-      <Section
-        title="최근 수집 소스"
-        actions={
-          <Button asChild size="sm" variant="ghost" className="gap-1">
-            <Link href="/desk/sources">
-              전체 보기
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </Link>
-          </Button>
-        }
-      >
+      <section>
+        <header className="flex items-end justify-between border-b border-foreground/80 pb-2">
+          <h2>최근 수집 소스</h2>
+          <Link
+            href="/desk/sources"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            전체 →
+          </Link>
+        </header>
         {latestSources.length === 0 ? (
-          <EmptyState title="아직 수집된 소스가 없습니다" />
+          <div className="pt-6">
+            <EmptyState title="아직 수집된 소스가 없습니다" />
+          </div>
         ) : (
-          <ul className="divide-y divide-border rounded-xl border border-border bg-card shadow-flat">
+          <ul className="divide-y divide-border">
             {latestSources.map((s) => (
-              <li
-                key={s.id}
-                className="flex flex-wrap items-center justify-between gap-3 px-5 py-4"
-              >
+              <li key={s.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">{s.title}</p>
                   <p className="text-xs text-muted-foreground">{s.sourceName}</p>
@@ -210,7 +181,7 @@ export default async function DeskHome() {
             ))}
           </ul>
         )}
-      </Section>
+      </section>
     </div>
   );
 }

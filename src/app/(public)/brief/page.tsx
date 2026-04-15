@@ -1,14 +1,12 @@
 import Link from "next/link";
-import { ArrowRight, Search, X } from "lucide-react";
+import { ChevronRight, Search, X } from "lucide-react";
 import { and, desc, eq, ilike, sql } from "drizzle-orm";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/common/empty-state";
-import { FreshnessIndicator } from "@/components/common/freshness-indicator";
 import { db } from "@/lib/db";
 import { briefs, issueCategories, issues } from "@/lib/db/schema";
-import { truncate } from "@/lib/utils";
+import { formatKoreanDate, truncate } from "@/lib/utils";
 
 export const metadata = { title: "브리프 목록" };
 export const dynamic = "force-dynamic";
@@ -57,13 +55,9 @@ export default async function BriefListPage({ searchParams }: Props) {
 
   return (
     <div className="space-y-10">
-      <header className="space-y-4">
-        <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-          Briefs
-        </p>
-        <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-[2.75rem]">
-          과방위 현안 브리프
-        </h1>
+      <header className="space-y-3 border-b border-border pb-8">
+        <p className="kicker">Briefs</p>
+        <h1>과방위 현안 브리프</h1>
         <p className="max-w-2xl text-[17px] leading-relaxed text-muted-foreground">
           이해민 의원실이 작성·검토한 공개 브리프입니다. 제목 또는 카테고리로 필터링할 수
           있고, 각 글에는 공식 출처와 마지막 검증 시각이 함께 표기됩니다.
@@ -73,7 +67,7 @@ export default async function BriefListPage({ searchParams }: Props) {
       <form
         action="/brief"
         method="get"
-        className="flex flex-col gap-3 sm:flex-row sm:items-center"
+        className="flex flex-col gap-2 sm:flex-row sm:items-center"
       >
         <label htmlFor="search" className="sr-only">
           제목 검색
@@ -88,14 +82,14 @@ export default async function BriefListPage({ searchParams }: Props) {
             type="search"
             name="q"
             defaultValue={params.q ?? ""}
-            placeholder="제목으로 검색"
+            placeholder="제목 검색"
             className="pl-9"
           />
         </div>
         <select
           name="category"
           defaultValue={params.category ?? ""}
-          className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+          className="h-10 rounded border border-input bg-background px-3 text-sm"
           aria-label="카테고리 선택"
         >
           <option value="">전체 카테고리</option>
@@ -126,17 +120,14 @@ export default async function BriefListPage({ searchParams }: Props) {
               <X className="h-3 w-3" aria-hidden />
             </Link>
           ))}
-          <Link
-            href="/brief"
-            className="text-primary underline-offset-4 hover:underline"
-          >
+          <Link href="/brief" className="text-primary underline-offset-4 hover:underline">
             전체 해제
           </Link>
         </div>
       ) : null}
 
       <div>
-        <p className="mb-4 text-sm text-muted-foreground">
+        <p className="mb-3 text-sm text-muted-foreground">
           총 <span className="font-semibold text-foreground">{rows.length}</span>건
         </p>
         {rows.length === 0 ? (
@@ -145,39 +136,33 @@ export default async function BriefListPage({ searchParams }: Props) {
             description="검색어나 카테고리를 바꿔 보시거나, 전체 목록에서 탐색해 주세요."
           />
         ) : (
-          <ul className="grid gap-4">
+          <ul className="divide-y divide-border border-y border-border">
             {rows.map((b) => (
               <li key={b.id}>
                 <Link
                   href={`/brief/issues/${encodeURIComponent(b.slug)}`}
-                  className="block"
+                  className="grid gap-3 px-1 py-5 transition-colors hover:bg-muted/40 sm:grid-cols-[140px_1fr_auto] sm:items-baseline sm:gap-6"
                 >
-                  <article className="card-float flex flex-col gap-3 p-6 sm:flex-row sm:items-start sm:gap-6">
-                    <div className="flex-1 space-y-2">
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                        {b.categoryName ? (
-                          <Badge variant="outline" className="font-medium">
-                            {b.categoryName}
-                          </Badge>
-                        ) : null}
-                        <FreshnessIndicator
-                          label="발행"
-                          value={b.publishedAt}
-                          variant="both"
-                        />
-                      </div>
-                      <h2 className="text-xl font-semibold leading-snug tracking-tight">
-                        {b.title}
-                      </h2>
-                      <p className="text-[15px] leading-relaxed text-muted-foreground">
-                        {truncate(b.summary, 220)}
-                      </p>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-1 text-sm font-medium text-primary sm:mt-1">
-                      자세히
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
-                    </div>
-                  </article>
+                  <div className="text-sm text-muted-foreground">
+                    <time>{formatKoreanDate(b.publishedAt)}</time>
+                    {b.categoryName ? (
+                      <span className="ml-3 border-l border-border pl-3">
+                        {b.categoryName}
+                      </span>
+                    ) : null}
+                  </div>
+                  <div>
+                    <h3 className="text-[17px] font-semibold leading-snug text-foreground">
+                      {b.title}
+                    </h3>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                      {truncate(b.summary, 220)}
+                    </p>
+                  </div>
+                  <ChevronRight
+                    className="hidden h-4 w-4 text-muted-foreground sm:block"
+                    aria-hidden
+                  />
                 </Link>
               </li>
             ))}

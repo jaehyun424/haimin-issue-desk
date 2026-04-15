@@ -36,11 +36,12 @@ export async function submitVoiceAction(_prev: unknown, fd: FormData) {
   if (type === "personal_grievance") {
     redirect("/voice/submitted?kind=grievance");
   }
+  // 협업/인터뷰는 폼 선택지에서 제외됨. 레거시 입력이 들어와도 안전하게 차단.
   if (type === "partnership") {
     return {
       ok: false,
       error:
-        "협업·인터뷰 요청은 의원실 공식 이메일로 직접 연락해 주세요. (사이트 접수 대상이 아닙니다.)",
+        "협업·인터뷰 요청은 사이트 접수 대상이 아닙니다. 의원실 공식 이메일로 직접 연락해 주세요.",
     } as const;
   }
 
@@ -63,7 +64,15 @@ export async function submitVoiceAction(_prev: unknown, fd: FormData) {
 
   const captcha = await verifyTurnstile(parsed.data.turnstileToken, ipRaw || undefined);
   if (!captcha.success) {
-    return { ok: false, error: "자동화 방지 확인에 실패했습니다." } as const;
+    const msg =
+      captcha.verdict === "not_configured"
+        ? "보안 검증이 설정되지 않았습니다. 관리자에게 문의해 주세요."
+        : captcha.verdict === "missing_token"
+          ? "자동화 방지 확인이 필요합니다. 페이지를 새로고침한 뒤 다시 시도해 주세요."
+          : captcha.verdict === "network_error"
+            ? "보안 검증 서비스에 일시적 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+            : "자동화 방지 확인에 실패했습니다.";
+    return { ok: false, error: msg } as const;
   }
 
   const [created] = await db

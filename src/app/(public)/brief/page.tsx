@@ -56,7 +56,7 @@ export default async function BriefListPage({ searchParams }: Props) {
   return (
     <div className="space-y-10">
       <header className="space-y-3 border-b border-border pb-8">
-        <p className="kicker">Briefs</p>
+        <p className="kicker">브리프</p>
         <h1>과방위 현안 브리프</h1>
         <p className="max-w-2xl text-[17px] leading-relaxed text-muted-foreground">
           이해민 의원실이 작성·검토한 공개 브리프입니다. 제목 또는 카테고리로 필터링할 수

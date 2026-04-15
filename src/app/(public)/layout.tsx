@@ -7,9 +7,9 @@ export default async function PublicLayout({ children }: { children: React.React
     [FLAG.VOICE_ENABLED]: false,
   }));
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-dvh flex-col">
       <SiteHeader voiceEnabled={flags[FLAG.VOICE_ENABLED]} />
-      <main id="main" className="container flex-1 py-8">
+      <main id="main" className="container flex-1 py-8 sm:py-10">
         {children}
       </main>
       <SiteFooter />

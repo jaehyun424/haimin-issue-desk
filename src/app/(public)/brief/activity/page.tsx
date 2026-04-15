@@ -1,8 +1,8 @@
 import { desc } from "drizzle-orm";
 import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/common/empty-state";
 import { db } from "@/lib/db";
 import { memberActivities } from "@/lib/db/schema";
-import { FALLBACK_ACTIVITIES } from "@/lib/db/sample-activities";
 import { formatKoreanDate } from "@/lib/utils";
 
 export const metadata = { title: "의정활동 타임라인" };
@@ -24,29 +24,10 @@ export default async function ActivityTimelinePage() {
     .orderBy(desc(memberActivities.occurredAt))
     .limit(200);
 
-  const items =
-    rows.length === 0
-      ? FALLBACK_ACTIVITIES.map((a) => ({
-          id: a.id,
-          activityType: a.activityType,
-          occurredAt: a.occurredAt,
-          title: a.title,
-          summary: a.summary,
-          officialSourceUrl: a.officialSourceUrl,
-        }))
-      : rows.map((a) => ({
-          id: a.id,
-          activityType: a.activityType,
-          occurredAt: a.occurredAt.toISOString(),
-          title: a.title,
-          summary: a.summary,
-          officialSourceUrl: a.officialSourceUrl,
-        }));
-
   return (
     <div className="space-y-8">
       <header className="space-y-3 border-b border-border pb-8">
-        <p className="kicker">Activity</p>
+        <p className="kicker">의정활동</p>
         <h1>의정활동 타임라인</h1>
         <p className="max-w-2xl text-[17px] leading-relaxed text-muted-foreground">
           이해민 의원의 발의안·표결·회의·발언 등 공식 활동과 의원실 후속조치를 시간순으로
@@ -54,46 +35,53 @@ export default async function ActivityTimelinePage() {
         </p>
       </header>
 
-      <section>
-        <p className="mb-5 text-sm text-muted-foreground">
-          총 <span className="font-semibold text-foreground">{items.length}</span>건
-        </p>
-        <ol className="border-l border-border">
-          {items.map((a) => (
-            <li key={a.id} className="relative pl-6 pb-7 last:pb-0">
-              <span
-                aria-hidden
-                className="absolute -left-[5px] top-1.5 h-[9px] w-[9px] rounded-full border-2 border-primary bg-background"
-              />
-              <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                <Badge variant="outline" className="font-medium">
-                  {TYPE_LABELS[a.activityType] ?? a.activityType}
-                </Badge>
-                <time>{formatKoreanDate(a.occurredAt)}</time>
-              </div>
-              <h3 className="mt-1.5 text-[17px] font-semibold leading-snug text-foreground">
-                {a.officialSourceUrl ? (
-                  <a
-                    href={a.officialSourceUrl}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="underline decoration-border underline-offset-4 hover:decoration-foreground"
-                  >
-                    {a.title}
-                  </a>
-                ) : (
-                  a.title
-                )}
-              </h3>
-              {a.summary ? (
-                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                  {a.summary}
-                </p>
-              ) : null}
-            </li>
-          ))}
-        </ol>
-      </section>
+      {rows.length === 0 ? (
+        <EmptyState
+          title="공식 활동 데이터를 동기화하고 있습니다"
+          description="국회 Open API 연동과 의원실 수기 입력이 반영되면 이 페이지에 자동으로 표시됩니다."
+        />
+      ) : (
+        <section>
+          <p className="mb-5 text-sm text-muted-foreground">
+            총 <span className="font-semibold text-foreground">{rows.length}</span>건
+          </p>
+          <ol className="border-l border-border">
+            {rows.map((a) => (
+              <li key={a.id} className="relative pl-6 pb-7 last:pb-0">
+                <span
+                  aria-hidden
+                  className="absolute -left-[5px] top-1.5 h-[9px] w-[9px] rounded-full border-2 border-primary bg-background"
+                />
+                <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                  <Badge variant="outline" className="font-medium">
+                    {TYPE_LABELS[a.activityType] ?? a.activityType}
+                  </Badge>
+                  <time>{formatKoreanDate(a.occurredAt)}</time>
+                </div>
+                <h3 className="mt-1.5 text-[17px] font-semibold leading-snug text-foreground">
+                  {a.officialSourceUrl ? (
+                    <a
+                      href={a.officialSourceUrl}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="underline decoration-border underline-offset-4 hover:decoration-foreground"
+                    >
+                      {a.title}
+                    </a>
+                  ) : (
+                    a.title
+                  )}
+                </h3>
+                {a.summary ? (
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                    {a.summary}
+                  </p>
+                ) : null}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
     </div>
   );
 }

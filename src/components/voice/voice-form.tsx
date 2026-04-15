@@ -7,9 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  VOICE_TYPES,
   VOICE_TYPE_DESCRIPTIONS,
   VOICE_TYPE_LABELS,
+  type VOICE_TYPES,
 } from "@/lib/validation/voice";
 import { submitVoiceAction } from "@/app/(public)/voice/actions";
 import { TurnstileWidget } from "./turnstile-widget";
@@ -18,6 +18,16 @@ interface Option {
   id: string;
   name: string;
 }
+
+/**
+ * 사용자 선택지: policy_proposal, field_report, personal_grievance.
+ * partnership 은 폼이 아니라 "협업 요청 안내" 카드로 분리되어 이메일로 유도.
+ */
+const FORM_VOICE_TYPES = [
+  "policy_proposal",
+  "field_report",
+  "personal_grievance",
+] as const satisfies ReadonlyArray<(typeof VOICE_TYPES)[number]>;
 
 export function VoiceForm({
   categories,
@@ -32,17 +42,17 @@ export function VoiceForm({
   return (
     <form action={formAction} className="space-y-8">
       <p className="sr-only">
-        과방위 관련 정책 제안 및 현장 의견을 접수하는 양식입니다. 필수 항목은 제출
-        유형, 제목, 내용, 개인정보 수집·이용 동의입니다.
+        과방위 관련 정책 제안 및 현장 의견을 접수하는 양식입니다. 필수 항목은 제출 유형,
+        제목, 내용, 개인정보 수집·이용 동의입니다.
       </p>
 
-      {/* 제출 유형 */}
+      {/* 제출 유형 — 모바일 1열, md+ 2열 */}
       <fieldset className="space-y-3">
         <legend className="text-sm font-semibold text-foreground">
           제출 유형 <span aria-hidden>*</span>
         </legend>
-        <div className="grid gap-2 sm:grid-cols-2">
-          {VOICE_TYPES.map((t) => (
+        <div className="grid gap-2 md:grid-cols-2">
+          {FORM_VOICE_TYPES.map((t) => (
             <label
               key={t}
               className="flex cursor-pointer items-start gap-3 rounded border border-border bg-card p-3 text-sm transition-colors hover:border-foreground/40 has-[:checked]:border-primary has-[:checked]:bg-accent"
@@ -111,7 +121,7 @@ export function VoiceForm({
         <p className="text-xs text-muted-foreground">20~3000자</p>
       </div>
 
-      {/* 선택 입력: 이름·이메일 */}
+      {/* 선택 입력 */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="voice-name">이름 또는 닉네임 (선택)</Label>

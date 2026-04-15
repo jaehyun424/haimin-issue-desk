@@ -5,7 +5,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableEmpty,
   TableHead,
   TableHeader,
   TableRow,
@@ -71,7 +70,7 @@ export default async function DeskIssuesPage({ searchParams }: Props) {
     <div className="space-y-8">
       <header className="flex flex-col gap-3 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="kicker">Issues</p>
+          <p className="kicker">이슈 관리</p>
           <h1 className="mt-2">이슈 관리</h1>
           <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
             과방위 현안을 이슈 단위로 추적합니다.
@@ -127,50 +126,87 @@ export default async function DeskIssuesPage({ searchParams }: Props) {
       </form>
 
       <Section title={`${rows.length}건`}>
-        <div className="card-line overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>제목</TableHead>
-                <TableHead>카테고리</TableHead>
-                <TableHead>상태</TableHead>
-                <TableHead>우선순위</TableHead>
-                <TableHead>담당</TableHead>
-                <TableHead>갱신</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rows.length === 0 ? (
-                <TableEmpty>조건에 맞는 이슈가 없습니다.</TableEmpty>
-              ) : (
-                rows.map((i) => (
-                  <TableRow key={i.id}>
-                    <TableCell>
-                      <Link className="font-medium hover:underline" href={`/desk/issues/${i.id}`}>
-                        {i.title}
-                      </Link>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {i.categoryName ?? "-"}
-                    </TableCell>
-                    <TableCell>
-                      <IssueStatusBadge status={i.status} />
-                    </TableCell>
-                    <TableCell>
-                      <IssuePriorityBadge priority={i.priority} />
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {i.ownerName ?? "-"}
-                    </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">
-                      {formatKoreanDateTime(i.updatedAt)}
-                    </TableCell>
+        {rows.length === 0 ? (
+          <div className="card-line p-10 text-center text-sm text-muted-foreground">
+            조건에 맞는 이슈가 없습니다.
+          </div>
+        ) : (
+          <>
+            {/* 데스크톱: 테이블 */}
+            <div className="card-line hidden overflow-hidden md:block">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>제목</TableHead>
+                    <TableHead>카테고리</TableHead>
+                    <TableHead>상태</TableHead>
+                    <TableHead>우선순위</TableHead>
+                    <TableHead>담당</TableHead>
+                    <TableHead>갱신</TableHead>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                </TableHeader>
+                <TableBody>
+                  {rows.map((i) => (
+                    <TableRow key={i.id}>
+                      <TableCell>
+                        <Link
+                          className="font-medium hover:underline"
+                          href={`/desk/issues/${i.id}`}
+                        >
+                          {i.title}
+                        </Link>
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {i.categoryName ?? "-"}
+                      </TableCell>
+                      <TableCell>
+                        <IssueStatusBadge status={i.status} />
+                      </TableCell>
+                      <TableCell>
+                        <IssuePriorityBadge priority={i.priority} />
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {i.ownerName ?? "-"}
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">
+                        {formatKoreanDateTime(i.updatedAt)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* 모바일: 카드 리스트 */}
+            <ul className="space-y-3 md:hidden">
+              {rows.map((i) => (
+                <li key={i.id}>
+                  <Link
+                    href={`/desk/issues/${i.id}`}
+                    className="card-flat block space-y-2 p-4"
+                  >
+                    <p className="text-[15px] font-medium leading-snug text-foreground">
+                      {i.title}
+                    </p>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <IssueStatusBadge status={i.status} />
+                      <IssuePriorityBadge priority={i.priority} />
+                      {i.categoryName ? (
+                        <span className="rounded-full border border-border bg-muted/40 px-2 py-0.5 text-[11px] text-muted-foreground">
+                          {i.categoryName}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span>담당 {i.ownerName ?? "-"}</span>
+                      <span>{formatKoreanDateTime(i.updatedAt)}</span>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
       </Section>
     </div>
   );

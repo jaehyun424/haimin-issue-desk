@@ -6,8 +6,7 @@ const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableE
     <div className="relative w-full overflow-x-auto">
       <table
         ref={ref}
-        // min-w 로 모바일에서 cell 이 뭉개지지 않도록 강제 — 컨테이너는 overflow-x-auto 로 스크롤.
-        className={cn("w-full min-w-[640px] caption-bottom text-sm", className)}
+        className={cn("w-full caption-bottom text-sm", className)}
         {...props}
       />
     </div>

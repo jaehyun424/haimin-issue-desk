@@ -46,7 +46,10 @@ function CategoryCreateForm() {
   const [state, formAction, pending] = useActionState(createCategoryAction, null as unknown);
   const err = (state as { error?: string } | null)?.error;
   return (
-    <form action={formAction} className="grid gap-2 sm:grid-cols-[1fr_120px_auto]">
+    <form
+      action={formAction}
+      className="grid gap-2 sm:grid-cols-[1fr_120px_auto]"
+    >
       <div>
         <Label className="sr-only" htmlFor="new-cat-name">
           카테고리명
@@ -65,27 +68,30 @@ function CategoryCreateForm() {
           defaultValue={1000}
         />
       </div>
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" disabled={pending} className="w-full sm:w-auto">
         {pending ? "추가 중…" : "추가"}
       </Button>
-      {err ? <p className="sm:col-span-3 text-sm text-destructive">{err}</p> : null}
+      {err ? <p className="text-sm text-destructive sm:col-span-3">{err}</p> : null}
     </form>
   );
 }
 
 function CategoryRow({ category, canManage }: { category: Category; canManage: boolean }) {
   const [editing, setEditing] = useState(false);
-  const [state, formAction, pending] = useActionState(updateCategoryAction, null as unknown);
+  const [updateState, updateAction, updatePending] = useActionState(
+    updateCategoryAction,
+    null as unknown,
+  );
   const [delState, deleteAction, deletePending] = useActionState(
     deleteCategoryAction,
     null as unknown,
   );
-  const err = (state as { error?: string } | null)?.error;
+  const updateErr = (updateState as { error?: string } | null)?.error;
   const delErr = (delState as { error?: string } | null)?.error;
 
   if (!editing) {
     return (
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="font-medium">
             {category.name}
@@ -96,14 +102,24 @@ function CategoryRow({ category, canManage }: { category: Category; canManage: b
           <p className="text-xs text-muted-foreground">정렬 {category.sortOrder}</p>
         </div>
         {canManage ? (
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => setEditing(true)}>
+          <div className="flex gap-2 sm:justify-end">
+            <Button
+              size="sm"
+              variant="outline"
+              className="flex-1 sm:flex-none"
+              onClick={() => setEditing(true)}
+            >
               편집
             </Button>
             <form
               action={deleteAction}
+              className="flex-1 sm:flex-none"
               onSubmit={(e) => {
-                if (!confirm("이 카테고리를 삭제할까요? 연결된 이슈는 보조 카테고리만 제거됩니다."))
+                if (
+                  !confirm(
+                    "이 카테고리를 삭제할까요? 연결된 이슈는 보조 카테고리만 제거됩니다.",
+                  )
+                )
                   e.preventDefault();
               }}
             >
@@ -113,6 +129,7 @@ function CategoryRow({ category, canManage }: { category: Category; canManage: b
                 variant="destructive"
                 type="submit"
                 disabled={deletePending}
+                className="w-full"
               >
                 {deletePending ? "삭제 중…" : "삭제"}
               </Button>
@@ -126,8 +143,8 @@ function CategoryRow({ category, canManage }: { category: Category; canManage: b
 
   return (
     <form
-      action={formAction}
-      className="grid gap-2 sm:grid-cols-[1fr_100px_auto_auto]"
+      action={updateAction}
+      className="flex flex-col gap-2 sm:grid sm:grid-cols-[1fr_100px_auto_auto] sm:items-center"
       onSubmit={() => setEditing(false)}
     >
       <input type="hidden" name="id" value={category.id} />
@@ -137,15 +154,28 @@ function CategoryRow({ category, canManage }: { category: Category; canManage: b
         <Checkbox name="isActive" defaultChecked={category.isActive} />
         활성
       </label>
-      <div className="flex gap-2">
-        <Button type="submit" size="sm" disabled={pending}>
+      <div className="flex gap-2 sm:justify-end">
+        <Button
+          type="submit"
+          size="sm"
+          disabled={updatePending}
+          className="flex-1 sm:flex-none"
+        >
           저장
         </Button>
-        <Button type="button" size="sm" variant="outline" onClick={() => setEditing(false)}>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          className="flex-1 sm:flex-none"
+          onClick={() => setEditing(false)}
+        >
           취소
         </Button>
       </div>
-      {err ? <p className="sm:col-span-4 text-sm text-destructive">{err}</p> : null}
+      {updateErr ? (
+        <p className="text-sm text-destructive sm:col-span-4">{updateErr}</p>
+      ) : null}
     </form>
   );
 }

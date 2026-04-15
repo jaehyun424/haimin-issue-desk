@@ -91,13 +91,13 @@ export function DeskSidebar({
         </ul>
       </nav>
 
-      {/* 하단 유저 + 홈/로그아웃 */}
+      {/* 하단: 유저 카드 → 홈으로 → 로그아웃 (세로 스택) */}
       <div className="mt-auto flex-none border-t border-border pb-safe">
-        {/* 유저 카드 */}
-        <div className="flex items-center gap-2.5 px-3 pb-3 pt-3">
+        {/* 유저 정보 */}
+        <div className="flex items-center gap-2.5 px-4 py-3">
           <span
             aria-hidden
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-muted/50 text-muted-foreground"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-muted/50 text-muted-foreground"
           >
             <User className="h-4 w-4" />
           </span>
@@ -107,23 +107,23 @@ export function DeskSidebar({
           </div>
         </div>
 
-        {/* 아래 구분선 + 두 개의 액션 */}
-        <div className="grid grid-cols-2 gap-0 border-t border-border">
+        {/* 구분선 + 세로 쌓은 2개 액션 */}
+        <div className="border-t border-border">
           <Link
             href="/"
             onClick={onNavigate}
-            className="flex items-center justify-center gap-1.5 border-r border-border py-2.5 text-xs text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
+            className="flex items-center gap-2 border-b border-border px-4 py-3 text-sm text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
           >
-            <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-            홈으로
+            <ExternalLink className="h-4 w-4" aria-hidden />
+            홈으로 돌아가기
           </Link>
           <form action="/api/auth/signout" method="post">
             <input type="hidden" name="callbackUrl" value="/" />
             <button
               type="submit"
-              className="flex w-full items-center justify-center gap-1.5 py-2.5 text-xs text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
+              className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
             >
-              <LogOut className="h-3.5 w-3.5" aria-hidden />
+              <LogOut className="h-4 w-4" aria-hidden />
               로그아웃
             </button>
           </form>

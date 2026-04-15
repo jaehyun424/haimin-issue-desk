@@ -12,10 +12,10 @@ import { UserManager } from "./user-manager";
 const FLAG_LABELS: Record<string, { label: string; hint: string }> = {
   voice_enabled: {
     label: "정책 제안 접수 공개 여부",
-    hint: "켜면 /voice 페이지가 공개되고 일반 이용자가 제안을 제출할 수 있습니다.",
+    hint: "켜면 정책 제안 페이지가 공개되고, 일반 이용자가 의견을 제출할 수 있습니다.",
   },
   election_mode: {
-    label: "선거모드",
+    label: "발행 안전모드",
     hint: "켜면 브리프 발행 시 검토자 승인 단계를 반드시 거쳐야 합니다.",
   },
   ai_enabled: {
@@ -73,6 +73,7 @@ export default async function DeskSettingsPage() {
             <ul className="divide-y divide-border">
               {defaultFlagSeeds().map((f) => {
                 const meta = FLAG_LABELS[f.key];
+                if (!meta) return null;
                 return (
                   <li
                     key={f.key}
@@ -80,13 +81,10 @@ export default async function DeskSettingsPage() {
                   >
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold text-foreground">
-                        {meta?.label ?? f.key}
+                        {meta.label}
                       </p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        {meta?.hint ?? f.description}
-                      </p>
-                      <p className="mt-1 font-mono text-[11px] text-muted-foreground">
-                        {f.key}
+                      <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+                        {meta.hint}
                       </p>
                     </div>
                     <FlagToggle

@@ -10,8 +10,10 @@ import { loginSchema } from "@/lib/validation/auth";
 
 export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // 데모/초기 배포 편의: seed 관리자 자격 증명이 prefill 된다.
+  // 운영 전환 시 비밀번호를 교체한 뒤 이 기본값은 제거해야 한다.
+  const [email, setEmail] = useState("admin@haimin.local");
+  const [password, setPassword] = useState("admin1234");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 

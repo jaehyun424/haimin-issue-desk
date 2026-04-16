@@ -8,11 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { loginSchema } from "@/lib/validation/auth";
 
+const IS_DEV = process.env.NODE_ENV === "development";
+const DEV_DEMO_EMAIL = "admin@haimin.local";
+const DEV_DEMO_PASSWORD = "admin1234";
+
 export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
   const router = useRouter();
-  // 데모 seed 관리자 자격 증명을 prefill. 운영 전환 시 교체 예정.
-  const [email, setEmail] = useState("admin@haimin.local");
-  const [password, setPassword] = useState("admin1234");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -50,7 +53,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
           type="email"
           autoComplete="email"
           required
-          placeholder="이메일 주소"
+          placeholder="이메일"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -75,6 +78,18 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
       <Button type="submit" size="lg" className="w-full shadow-soft" disabled={pending}>
         {pending ? "로그인 중…" : "로그인"}
       </Button>
+      {IS_DEV ? (
+        <button
+          type="button"
+          onClick={() => {
+            setEmail(DEV_DEMO_EMAIL);
+            setPassword(DEV_DEMO_PASSWORD);
+          }}
+          className="block w-full text-center text-[11px] text-muted-foreground underline underline-offset-4 hover:text-foreground"
+        >
+          개발용 계정 채우기 (dev only)
+        </button>
+      ) : null}
     </form>
   );
 }

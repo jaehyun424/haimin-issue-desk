@@ -78,9 +78,6 @@ export default async function VoicePage() {
       <section aria-label="제안 양식">
         <header className="border-b border-foreground/80 pb-2">
           <h2>제안 양식</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            필수 항목은 제출 유형·제목·내용·개인정보 수집 동의입니다.
-          </p>
         </header>
         <div className="mt-6">
           <VoiceForm

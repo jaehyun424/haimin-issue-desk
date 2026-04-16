@@ -62,13 +62,17 @@ export function renderMarkdown(md: string): string {
 
   for (const raw of lines) {
     const line = raw.trimEnd();
-    if (line.trim() === "") {
+    // 리스트·헤더·인용 판정은 leading whitespace 를 허용한다.
+    // (GFM 는 들여쓴 리스트를 중첩으로 처리하지만, 본 렌더러는 간략화를 위해
+    //  동일 레벨로 취급한다 — 최소 "번호 리스트가 한 줄로 붙어 보이는" 문제를 방지.)
+    const trimmed = line.trim();
+    if (trimmed === "") {
       flushParagraph();
       closeList();
       closeQuote();
       continue;
     }
-    const headerMatch = /^(#{1,3})\s+(.+)$/.exec(line);
+    const headerMatch = /^(#{1,3})\s+(.+)$/.exec(trimmed);
     if (headerMatch) {
       flushParagraph();
       closeList();
@@ -77,7 +81,7 @@ export function renderMarkdown(md: string): string {
       out.push(`<h${level}>${inline(headerMatch[2]!)}</h${level}>`);
       continue;
     }
-    const ulMatch = /^[-*]\s+(.*)$/.exec(line);
+    const ulMatch = /^[-*]\s+(.*)$/.exec(trimmed);
     if (ulMatch) {
       flushParagraph();
       closeQuote();
@@ -89,7 +93,7 @@ export function renderMarkdown(md: string): string {
       out.push(`<li>${inline(ulMatch[1]!)}</li>`);
       continue;
     }
-    const olMatch = /^\d+\.\s+(.*)$/.exec(line);
+    const olMatch = /^\d+\.\s+(.*)$/.exec(trimmed);
     if (olMatch) {
       flushParagraph();
       closeQuote();
@@ -101,7 +105,7 @@ export function renderMarkdown(md: string): string {
       out.push(`<li>${inline(olMatch[1]!)}</li>`);
       continue;
     }
-    const quoteMatch = /^>\s?(.*)$/.exec(line);
+    const quoteMatch = /^>\s?(.*)$/.exec(trimmed);
     if (quoteMatch) {
       flushParagraph();
       closeList();
@@ -114,7 +118,7 @@ export function renderMarkdown(md: string): string {
     }
     closeList();
     closeQuote();
-    paragraph.push(line);
+    paragraph.push(trimmed);
   }
   flushParagraph();
   closeList();

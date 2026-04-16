@@ -12,7 +12,8 @@ import {
   issues,
   sourceDocuments,
 } from "@/lib/db/schema";
-import { formatKoreanDate, formatKoreanDateTime } from "@/lib/utils";
+import { MEMBER } from "@/lib/constants/member";
+import { formatKoreanDate } from "@/lib/utils";
 import { renderMarkdown } from "@/lib/markdown";
 
 export const dynamic = "force-dynamic";
@@ -133,22 +134,25 @@ export default async function BriefDetailPage({ params }: Props) {
       <section className="mt-12 border-t border-border pt-8">
         <h2 className="mb-4">참고한 출처</h2>
         <SourceList items={sources} />
-        <div className="mt-6 flex items-center gap-3 text-xs text-muted-foreground">
-          <FreshnessIndicator
-            label="마지막 검증"
-            value={brief.lastVerifiedAt ?? brief.publishedAt}
-            variant="absolute"
-          />
-        </div>
       </section>
 
-      <footer className="mt-10 border-t border-border pt-5 text-[13px] text-muted-foreground">
-        본 브리프는 공식 자료를 기반으로 의원실이 정리한 것이며, 마지막 검증 시각 이후
-        사실관계는 변동될 수 있습니다. 마지막 검증:{" "}
-        <span className="font-medium text-foreground">
-          {formatKoreanDateTime(brief.lastVerifiedAt ?? brief.publishedAt)}
-        </span>
-        . 오기·정정 요청은 의원실 공식 이메일로 받습니다.
+      <section className="mt-10 border-t border-border pt-6 text-sm text-muted-foreground">
+        <FreshnessIndicator
+          label="마지막 검증"
+          value={brief.lastVerifiedAt ?? brief.publishedAt}
+          variant="both"
+        />
+      </section>
+
+      <footer className="mt-8 border-t border-border pt-5 text-[13px] leading-relaxed text-muted-foreground">
+        오기·사실관계 정정 요청은 의원실 공식 이메일{" "}
+        <a
+          href={`mailto:${MEMBER.officeEmail}`}
+          className="underline underline-offset-4 hover:text-foreground"
+        >
+          {MEMBER.officeEmail}
+        </a>
+        로 보내 주세요.
       </footer>
     </article>
   );

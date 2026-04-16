@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/common/empty-state";
 import { db } from "@/lib/db";
 import { memberActivities } from "@/lib/db/schema";
+import { MEMBER } from "@/lib/constants/member";
 import { formatKoreanDate } from "@/lib/utils";
 
 export const metadata = { title: "의정활동 타임라인" };
@@ -30,15 +31,16 @@ export default async function ActivityTimelinePage() {
         <p className="kicker">의정활동</p>
         <h1>의정활동 타임라인</h1>
         <p className="max-w-2xl text-[17px] leading-relaxed text-muted-foreground">
-          이해민 의원의 발의안·표결·회의·발언 등 공식 활동과 의원실 후속조치를 시간순으로
-          표시합니다. 사실 기록 중심으로 정리하며, 정치적 수사는 배제합니다.
+          {MEMBER.name} 의원({MEMBER.party} · {MEMBER.district} · {MEMBER.committeeShort})의
+          발의안·표결·회의·발언 등 공식 활동과 의원실 후속조치를 시간순으로 표시합니다.
+          사실 기록 중심으로 정리하며, 정치적 수사는 배제합니다.
         </p>
       </header>
 
       {rows.length === 0 ? (
         <EmptyState
-          title="공식 활동 데이터를 동기화하고 있습니다"
-          description="국회 공식 자료 연동과 의원실 수기 입력이 반영되면 이 페이지에 자동으로 표시됩니다."
+          title="공식 활동 데이터를 정리 중입니다"
+          description="국회 공식 자료와 의원실이 직접 정리한 기록이 반영되면 이 페이지에 시간순으로 표시됩니다."
         />
       ) : (
         <section>

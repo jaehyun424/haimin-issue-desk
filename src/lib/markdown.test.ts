@@ -26,4 +26,25 @@ describe("renderMarkdown (safe subset)", () => {
     expect(html).toContain("<ul>");
     expect(html).toContain("<li>항목1</li>");
   });
+
+  it("들여쓴 번호 리스트도 ol 로 렌더(단순화)", () => {
+    const md = [
+      "본문 문장.",
+      "  1. 첫째",
+      "  2. 둘째",
+      "  3. 셋째",
+    ].join("\n");
+    const html = renderMarkdown(md);
+    expect(html).toContain("<ol>");
+    expect(html).toContain("<li>첫째</li>");
+    expect(html).toContain("<li>둘째</li>");
+    expect(html).toContain("<li>셋째</li>");
+  });
+
+  it("들여쓴 ul 도 동일 레벨로 처리", () => {
+    const html = renderMarkdown("  - 들여쓴\n  - 항목");
+    expect(html).toContain("<ul>");
+    expect(html).toContain("<li>들여쓴</li>");
+    expect(html).toContain("<li>항목</li>");
+  });
 });

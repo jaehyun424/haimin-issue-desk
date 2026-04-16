@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, notInArray, sql } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BriefStatusBadge, IssuePriorityBadge, IssueStatusBadge } from "@/components/common/status-badge";
@@ -17,7 +17,6 @@ import {
   users,
 } from "@/lib/db/schema";
 import { requireDeskSession } from "@/lib/auth/session";
-import { ROLE_LABELS } from "@/lib/constants/roles";
 import { formatKoreanDateTime } from "@/lib/utils";
 import { IssueForm } from "../issue-form";
 import { LinkSourceForm } from "./link-source-form";
@@ -30,7 +29,7 @@ interface Props {
 }
 
 export default async function IssueDetailPage({ params }: Props) {
-  const session = await requireDeskSession();
+  await requireDeskSession();
   const { id } = await params;
 
   const issue = await db
@@ -95,6 +94,23 @@ export default async function IssueDetailPage({ params }: Props) {
       .where(eq(briefs.issueId, id))
       .orderBy(desc(briefs.updatedAt)),
   ]);
+
+  const linkedSourceIds = sources.map((s) => s.id);
+  const linkableOptions = await db
+    .select({
+      id: sourceDocuments.id,
+      title: sourceDocuments.title,
+      sourceName: sourceDocuments.sourceName,
+      publishedAt: sourceDocuments.publishedAt,
+    })
+    .from(sourceDocuments)
+    .where(
+      linkedSourceIds.length > 0
+        ? and(notInArray(sourceDocuments.id, linkedSourceIds), sql`true`)
+        : sql`true`,
+    )
+    .orderBy(desc(sourceDocuments.fetchedAt))
+    .limit(100);
 
   const categoryIds = links.map((l) => l.categoryId);
 
@@ -199,19 +215,12 @@ export default async function IssueDetailPage({ params }: Props) {
             <CardContent>
               <SourceList items={sources} emptyMessage="아직 연결된 출처가 없습니다." />
               <div className="mt-4 border-t border-border pt-4">
-                <LinkSourceForm issueId={issue.id} />
-                <p className="mt-2 text-xs text-muted-foreground">
-                  사용 중인 출처 ID 는 /desk/sources 에서 확인할 수 있습니다.
-                </p>
+                <LinkSourceForm issueId={issue.id} options={linkableOptions} />
               </div>
             </CardContent>
           </Card>
         </div>
       </section>
-
-      <p className="text-xs text-muted-foreground">
-        로그인: {session.user.email} · 역할: {ROLE_LABELS[session.user.role]}
-      </p>
     </div>
   );
 }

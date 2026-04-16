@@ -46,8 +46,22 @@ const SEED_ENTRIES: Array<{ date: string; title: string }> = [
   { date: "2026-04-14", title: "AI 데이터센터 특별법 과방위 의결" },
 ];
 
-function isoDate(d: Date): string {
-  return d.toISOString().slice(0, 10);
+/**
+ * Asia/Seoul 기준 날짜 (YYYY-MM-DD).
+ *
+ * seed-activities.ts 의 멱등 매칭이 Postgres `AT TIME ZONE 'Asia/Seoul'` DATE 비교를
+ * 사용하므로, check 스크립트도 동일 기준으로 날짜를 추출해야 예측이 일치한다.
+ * 과거 버전은 JS `toISOString()` (UTC 기준)을 썼는데, prod 레코드가 KST 자정 근처에
+ * 저장된 경우 UTC 날짜가 한 날 앞/뒤로 밀려 seed 의 실제 동작과 check 예측이
+ * 어긋나는 사고가 있었다.
+ */
+function isoDateKST(d: Date): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(d);
 }
 
 async function main() {
@@ -75,7 +89,7 @@ async function main() {
   }
 
   const prodKey = (r: { occurredAt: Date; title: string }) =>
-    `${isoDate(r.occurredAt)}|${r.title}`;
+    `${isoDateKST(r.occurredAt)}|${r.title}`;
   const seedKey = (e: { date: string; title: string }) => `${e.date}|${e.title}`;
 
   const matched: typeof rows = [];
@@ -93,7 +107,7 @@ async function main() {
       matched.push(exact);
       continue;
     }
-    const byDate = rows.filter((r) => isoDate(r.occurredAt) === seed.date);
+    const byDate = rows.filter((r) => isoDateKST(r.occurredAt) === seed.date);
     const byTitle = rows.filter((r) => r.title === seed.title);
     if (byDate.length > 0 && !matched.some((m) => m.id === byDate[0]!.id)) {
       partialMatches.push({
@@ -123,7 +137,7 @@ async function main() {
   if (matched.length > 0) {
     console.log(`[정확히 일치 — ${matched.length}건]`);
     for (const m of matched) {
-      console.log(`  ✓ ${isoDate(m.occurredAt)} ${m.title}`);
+      console.log(`  ✓ ${isoDateKST(m.occurredAt)} ${m.title}`);
     }
     console.log();
   }
@@ -143,7 +157,7 @@ async function main() {
     for (const p of partialMatches) {
       console.log(`  ⚠  ${p.reason}`);
       console.log(
-        `      prod: ${isoDate(p.prod.occurredAt)} "${p.prod.title}" (id: ${p.prod.id.slice(0, 8)})`,
+        `      prod: ${isoDateKST(p.prod.occurredAt)} "${p.prod.title}" (id: ${p.prod.id.slice(0, 8)})`,
       );
       console.log(`      seed: ${p.seed.date} "${p.seed.title}"`);
     }
@@ -154,7 +168,7 @@ async function main() {
     console.log(`[prod 전용 — ${prodOnly.length}건 ⚠  seed 에 대응 항목 없음]`);
     for (const p of prodOnly) {
       console.log(
-        `  ⚠  ${isoDate(p.occurredAt)} "${p.title}" (id: ${p.id.slice(0, 8)}, type: ${p.activityType})`,
+        `  ⚠  ${isoDateKST(p.occurredAt)} "${p.title}" (id: ${p.id.slice(0, 8)}, type: ${p.activityType})`,
       );
     }
     console.log();

@@ -14,7 +14,7 @@ import { config as loadEnv } from "dotenv";
 loadEnv({ path: ".env.local" });
 loadEnv({ path: ".env" });
 
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { db } from "./index";
 import { memberActivities } from "./schema";
 
@@ -138,12 +138,17 @@ const ACTIVITIES: ActivitySeed[] = [
 
 async function seedOne(spec: ActivitySeed): Promise<"inserted" | "existing"> {
   const occurredAt = new Date(spec.occurredAt);
+  // 멱등 매칭 정책: "Asia/Seoul 기준 같은 날짜 + 같은 title" 이면 이미 존재로 간주.
+  // timestamp 정확 일치(eq)로 보면 기존 prod 레코드가 seed 가 생성하는 Date 와 분·초
+  // 단위로 어긋나 중복 삽입되는 사고가 발생(v1 초기에 확인). 사실관계 타임라인은
+  // 분 단위 정밀도가 의미 없으므로 "한국 달력 기준 같은 날짜"면 동일 이벤트로 본다.
+  const dayStr = spec.occurredAt.slice(0, 10); // "YYYY-MM-DD"
   const existing = await db
     .select({ id: memberActivities.id })
     .from(memberActivities)
     .where(
       and(
-        eq(memberActivities.occurredAt, occurredAt),
+        sql`DATE(${memberActivities.occurredAt} AT TIME ZONE 'Asia/Seoul') = ${dayStr}::date`,
         eq(memberActivities.title, spec.title),
       ),
     )

@@ -125,7 +125,7 @@ export function DeskSidebar({
             disabled={pendingSignOut}
             onClick={() =>
               startSignOut(async () => {
-                await signOut({ callbackUrl: "/", redirect: true });
+                await signOut({ callbackUrl: "/desk/login", redirect: true });
               })
             }
             className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-xs text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground disabled:opacity-60"

@@ -7,7 +7,7 @@
 | --- | --- | --- | --- |
 | 관리 콘솔 | `/desk` | 의원실 실무자 (비공개) | v1 본체 |
 | 공개 브리프 | `/brief` | 시민·언론·업계 | 공개 |
-| 정책 제안 | `/voice` | 정책 제안자 | feature flag로 **초기 OFF** |
+| 정책 제안 | `/voice` | 정책 제안자 | `voice_enabled` 플래그로 운영 제어 (현재 ON) |
 
 제품의 본체는 관리 콘솔이다. 공개 브리프는 관리 콘솔에서 의원실 검토를 거쳐 발행된
 결과만 노출한다. 정책 제안 모듈은 코드상 구현되어 있으나 초기 배포에서는 꺼 둔다.
@@ -55,7 +55,7 @@ src/
     (public)/                공개 페이지 레이아웃 그룹
       page.tsx               홈
       brief/                 공개 브리프 (목록/상세/타임라인)
-      voice/                 정책 제안 폼 (feature flag로 404)
+      voice/                 정책 제안 폼 (voice_enabled 플래그 OFF 시 404)
       privacy/  terms/  source-policy/  accessibility/
     desk/                    내부 관리 콘솔 (로그인 가드)
       login/
@@ -106,7 +106,7 @@ docs/                        PRD·RESEARCH·KICKOFF
 
 | key | 기본값 | 설명 |
 | --- | --- | --- |
-| `voice_enabled` | `false` | voice 모듈 공개 여부 |
+| `voice_enabled` | `true` (현재 운영) · 기본값 `false` | voice 모듈 공개 여부 |
 | `election_mode` | `true` | 발행 안전모드. 자동 발행 금지 + 검토 단계 필수 |
 | `ai_enabled` | `false` | LLM 연동 사용 여부 |
 

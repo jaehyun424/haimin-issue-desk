@@ -5,7 +5,7 @@
  * - 한 요청 내에서는 결과를 캐시(모듈 스코프 Map)하여 N번 질의 피함.
  * - "비 요청 환경"(seed, cron)에서도 동작.
  */
-import { and, eq, inArray } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
 import { FLAG, type FlagKey, defaultFlagSeeds } from "../constants/feature-flags";
 import { db } from "../db";
 import { featureFlags } from "../db/schema";
@@ -83,7 +83,3 @@ export async function ensureDefaults(): Promise<void> {
 
 export { FLAG };
 export type { FlagKey };
-
-// 금지: `and/eq` 를 외부에서 재활용하지 말 것. 이 파일 내부 구현 전용.
-void and;
-void eq;

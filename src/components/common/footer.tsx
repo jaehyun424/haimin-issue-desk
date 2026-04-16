@@ -52,7 +52,7 @@ export function SiteFooter() {
               href="/desk/login"
               className="text-[11px] text-muted-foreground/60 transition-colors hover:text-muted-foreground"
             >
-              관리자 로그인
+              관리자
             </Link>
           ) : null}
         </div>

@@ -7,6 +7,14 @@ const LINKS = [
   { href: "/accessibility", label: "접근성 안내" },
 ];
 
+/**
+ * 데모 모드 — Vercel Preview 환경에서만 ON.
+ * - Production 에서는 푸터에 관리자 링크를 노출하지 않는다(내부자 URL 직접 입력).
+ * - Preview 에서는 시연 편의를 위해 관리자 링크를 작게 노출.
+ * - 스위치: `NEXT_PUBLIC_DEMO_MODE=true` env 를 Vercel Preview 스코프에만 설정.
+ */
+const SHOW_DEMO = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+
 export function SiteFooter() {
   return (
     <footer className="mt-20 border-t border-border bg-muted/40">
@@ -34,8 +42,19 @@ export function SiteFooter() {
             ))}
           </nav>
         </div>
-        <div className="mt-8 border-t border-border/80 pt-5 text-[12px] text-muted-foreground">
-          © 이해민 의원실. 공식 공지는 국회 및 각 부처의 공식 채널을 통해 확인해 주세요.
+        <div className="mt-8 flex items-center justify-between gap-3 border-t border-border/80 pt-5 text-[12px] text-muted-foreground">
+          <span>
+            © 이해민 의원실. 공식 공지는 국회 및 각 부처의 공식 채널을 통해 확인해
+            주세요.
+          </span>
+          {SHOW_DEMO ? (
+            <Link
+              href="/desk/login"
+              className="text-[11px] text-muted-foreground/60 transition-colors hover:text-muted-foreground"
+            >
+              관리자 로그인
+            </Link>
+          ) : null}
         </div>
       </div>
     </footer>

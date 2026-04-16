@@ -8,14 +8,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { loginSchema } from "@/lib/validation/auth";
 
-const IS_DEV = process.env.NODE_ENV === "development";
+/**
+ * 데모 모드 — dev 또는 Vercel Preview(NEXT_PUBLIC_DEMO_MODE=true) 에서만 ON.
+ * Production 에서는 빈 입력으로 시작하고 시연용 계정 prefill/버튼/배너 모두 감춘다.
+ */
+const SHOW_DEMO =
+  process.env.NODE_ENV === "development" ||
+  process.env.NEXT_PUBLIC_DEMO_MODE === "true";
 const DEV_DEMO_EMAIL = "admin@haimin.local";
 const DEV_DEMO_PASSWORD = "admin1234";
 
 export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(SHOW_DEMO ? DEV_DEMO_EMAIL : "");
+  const [password, setPassword] = useState(SHOW_DEMO ? DEV_DEMO_PASSWORD : "");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -70,6 +76,12 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
+      {SHOW_DEMO ? (
+        <p className="rounded bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-800">
+          ⚠ 데모 모드: 시연용 계정이 자동 입력되어 있습니다. Production 환경에서는
+          이 배너와 자동 입력이 노출되지 않습니다.
+        </p>
+      ) : null}
       {error ? (
         <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {error}
@@ -78,18 +90,6 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
       <Button type="submit" size="lg" className="w-full shadow-soft" disabled={pending}>
         {pending ? "로그인 중…" : "로그인"}
       </Button>
-      {IS_DEV ? (
-        <button
-          type="button"
-          onClick={() => {
-            setEmail(DEV_DEMO_EMAIL);
-            setPassword(DEV_DEMO_PASSWORD);
-          }}
-          className="block w-full text-center text-[11px] text-muted-foreground underline underline-offset-4 hover:text-foreground"
-        >
-          개발용 계정 채우기 (dev only)
-        </button>
-      ) : null}
     </form>
   );
 }

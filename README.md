@@ -1,14 +1,16 @@
 # haimin-issue-desk
 
-이해민 의원실 / 과방위 통합 플랫폼. 하나의 코드베이스 안에 세 개의 사용자 표면을 갖는다.
+이해민 의원실(조국혁신당·비례대표·과학기술정보방송통신위원회) 공식 웹 플랫폼.
+하나의 코드베이스 안에 세 개의 사용자 표면을 갖는다.
 
 | 모듈 | 경로 | 대상 | 상태 |
 | --- | --- | --- | --- |
-| Desk | `/desk` | 의원실 실무자 (비공개) | v1 본체 |
-| Brief | `/brief` | 시민·언론·업계 | 공개 |
-| Voice | `/voice` | 정책 제안자 | feature flag로 **초기 OFF** |
+| 관리 콘솔 | `/desk` | 의원실 실무자 (비공개) | v1 본체 |
+| 공개 브리프 | `/brief` | 시민·언론·업계 | 공개 |
+| 정책 제안 | `/voice` | 정책 제안자 | feature flag로 **초기 OFF** |
 
-제품의 본체는 `Desk` 다. 공개 `Brief` 는 Desk에서 reviewer 승인된 결과만 노출한다. `Voice` 는 코드상 구현하되 초기 배포에서는 꺼 둔다.
+제품의 본체는 관리 콘솔이다. 공개 브리프는 관리 콘솔에서 의원실 검토를 거쳐 발행된
+결과만 노출한다. 정책 제안 모듈은 코드상 구현되어 있으나 초기 배포에서는 꺼 둔다.
 
 ---
 
@@ -55,7 +57,7 @@ src/
       brief/                 공개 브리프 (목록/상세/타임라인)
       voice/                 정책 제안 폼 (feature flag로 404)
       privacy/  terms/  source-policy/  accessibility/
-    desk/                    내부 이슈 데스크 (로그인 가드)
+    desk/                    내부 관리 콘솔 (로그인 가드)
       login/
       issues/  sources/  briefs/  voice/  settings/
     api/
@@ -81,28 +83,31 @@ docs/                        PRD·RESEARCH·KICKOFF
 
 ## 운영 원칙 (발췌)
 
-1. **공개 브리프는 reviewer 승인 후에만 노출**. 소스가 0개면 발행 불가.
+1. **공개 브리프는 의원실 검토 후에만 노출**. 소스가 0개면 발행 불가.
 2. **AI는 선택사항**. `FEATURE_AI_DEFAULT=false` 여도 앱 전체가 완전히 동작해야 한다.
-3. **voice는 공식 청원이 아님**. 모든 카피는 "정책 제안/현장 의견 접수"로 통일.
+3. **정책 제안은 공식 청원이 아님**. 모든 카피는 "정책 제안/현장 의견 접수"로 통일.
 4. **관리자 주요 액션은 audit log 기록**. 비밀번호/민감 원문은 로그에 남기지 않는다.
-5. **하드코딩 금지**: 의원 `MONA_CD`, 카테고리 목록, 서비스코드 설명, 선거모드 날짜.
-6. **모바일 우선·접근성 우선**. 본문 기본 17px. 명암비 AA.
+   로그인 성공/실패도 모두 기록(IP 해시·UA 포함, 비밀번호 제외).
+5. **의원 정보 SSOT**: `src/lib/constants/member.ts` 에 의원 이름·정당·선거구·위원회·
+   공식 이메일을 한 곳에 모아둔다. 사실관계 변경 시 이 파일 1곳만 수정.
+6. **하드코딩 금지**: 카테고리 목록, 서비스코드 설명, 선거모드 날짜.
+7. **모바일 우선·접근성 우선**. 본문 기본 17px. 명암비 AA.
 
-## 역할
+## 역할 (RBAC)
 
-| role | 권한 |
-| --- | --- |
-| admin | 사용자/플래그/카테고리/브리프 발행 전부 |
-| editor | 이슈·소스·브리프 초안 작성·수정 |
-| reviewer | 브리프 review → publish 승인 |
-| viewer | 읽기 전용 |
+| role | 권한 | v1 운영 |
+| --- | --- | --- |
+| admin | 사용자/플래그/카테고리/브리프 발행 전부 | ✅ 기본 계정 |
+| editor | 이슈·소스·브리프 초안 작성·수정 | ✅ 기본 계정 |
+| reviewer | 브리프 review → publish 승인 | 코드는 구현되어 있으며 의원실 규모 확장 시 활성화 |
+| viewer | 읽기 전용 | 필요 시 수동 생성 |
 
 ## Feature flags
 
 | key | 기본값 | 설명 |
 | --- | --- | --- |
 | `voice_enabled` | `false` | voice 모듈 공개 여부 |
-| `election_mode` | `true` | 선거모드. 자동 발행 금지 + reviewer 필수 |
+| `election_mode` | `true` | 발행 안전모드. 자동 발행 금지 + 검토 단계 필수 |
 | `ai_enabled` | `false` | LLM 연동 사용 여부 |
 
 DB 값이 있으면 DB 값을, 없으면 env 기본값을 사용한다.
@@ -110,13 +115,18 @@ DB 값이 있으면 DB 값을, 없으면 env 기본값을 사용한다.
 ## DB
 
 ```
-npm run db:generate      # 스키마 diff → SQL 마이그레이션 생성
-npm run db:push          # 개발용: schema 바로 반영 (대화형)
-npm run db:migrate       # 운영용: 생성된 SQL 적용 (비대화형)
-npm run db:seed          # 카테고리 / flags / admin·editor seed 계정
-npm run db:seed:sample   # 샘플 이슈·출처·브리프 3세트 (데모용)
-npm run db:studio        # Drizzle Studio
+npm run db:generate           # 스키마 diff → SQL 마이그레이션 생성
+npm run db:push               # 개발용: schema 바로 반영 (대화형)
+npm run db:migrate            # 운영용: 생성된 SQL 적용 (비대화형)
+npm run db:seed               # 카테고리 / flags / admin·editor seed 계정
+npm run db:seed:sample        # 샘플 이슈·출처·브리프 4세트 (데모용, 멱등)
+npm run db:seed:activities    # 의정활동 타임라인 10건 (멱등)
+npm run db:studio             # Drizzle Studio
 ```
+
+**주의**: `seed-activities.ts` 의 일부 항목은 언론 보도 URL을 임시로 사용하고 있습니다.
+배포 전 `likms.assembly.go.kr` 에서 의안번호·공식 URL을 확인해 교체해 주세요.
+(`metadataJson.needsOfficialUrl=true` 인 항목이 대상)
 
 ## Vercel 배포
 

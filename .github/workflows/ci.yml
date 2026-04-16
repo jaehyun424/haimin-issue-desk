@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint · Typecheck · Test · Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm run test
+
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_APP_URL: https://haimin-issue-desk.vercel.app
+          APP_ENV: staging
+          # CI 에서는 실제 DB 를 띄우지 않는다. 공개 페이지는 전부 force-dynamic 이므로
+          # 빌드 단계에서 DB 연결이 필요하지 않다.
+          DATABASE_URL: postgres://dummy:dummy@localhost:5432/dummy?sslmode=disable
+          AUTH_SECRET: ci-dummy-secret-must-be-at-least-32-chars-long
+          AUTH_TRUST_HOST: 'true'

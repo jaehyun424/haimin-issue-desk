@@ -18,6 +18,7 @@
     "db:seed": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env src/lib/db/seed.ts",
     "db:seed:sample": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env src/lib/db/sample.ts",
     "db:seed:activities": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env src/lib/db/seed-activities.ts",
+    "db:check:activities": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/check-activities.ts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {

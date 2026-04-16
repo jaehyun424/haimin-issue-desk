@@ -50,9 +50,10 @@ const ACTIVITIES: ActivitySeed[] = [
   {
     activityType: "vote",
     occurredAt: "2024-12-26T14:00:00+09:00",
-    title: "인공지능기본법 본회의 가결",
+    title:
+      "인공지능 발전과 신뢰 기반 조성 등에 관한 기본법(인공지능기본법) 국회 본회의 가결",
     summary:
-      "인공지능 산업 진흥 및 신뢰 기반 조성 등에 관한 기본법(AI 기본법)이 본회의를 통과함.",
+      "인공지능 발전과 신뢰 기반 조성 등에 관한 기본법(인공지능기본법)이 국회 본회의를 통과함.",
     officialSourceUrl: "https://likms.assembly.go.kr/bill/MooringBill.do",
     needsOfficialUrl: true,
   },

@@ -42,15 +42,16 @@ export function SiteFooter() {
             ))}
           </nav>
         </div>
-        <div className="mt-8 flex items-center justify-between gap-3 border-t border-border/80 pt-5 text-[12px] text-muted-foreground">
-          <span>
+        <div className="mt-8 flex flex-col items-start gap-3 border-t border-border/80 pt-5 text-[12px] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <span className="min-w-0">
             © 이해민 의원실. 공식 공지는 국회 및 각 부처의 공식 채널을 통해 확인해
             주세요.
           </span>
           {SHOW_DEMO ? (
             <Link
               href="/desk/login"
-              className="text-[11px] text-muted-foreground/60 transition-colors hover:text-muted-foreground"
+              aria-label="관리자 로그인 페이지로 이동"
+              className="shrink-0 self-end whitespace-nowrap text-[11px] text-muted-foreground/60 transition-colors hover:text-muted-foreground sm:self-auto"
             >
               관리자
             </Link>

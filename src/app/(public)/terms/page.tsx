@@ -1,3 +1,5 @@
+import { MEMBER } from "@/lib/constants/member";
+
 export const metadata = { title: "이용안내" };
 
 export default function TermsPage() {
@@ -16,7 +18,7 @@ export default function TermsPage() {
         <h2>서비스 성격</h2>
         <ul className="list-disc space-y-1 pl-6 text-sm leading-relaxed">
           <li>본 사이트는 국회 공식 청원 또는 민원 시스템이 아닙니다.</li>
-          <li>공개 브리프는 편집자·검토자의 확인을 거친 뒤 발행됩니다.</li>
+          <li>공개 브리프는 의원실 검토를 거친 뒤 발행됩니다.</li>
           <li>게시된 정보는 발행 시점의 자료에 기반하며, 이후 변동될 수 있습니다.</li>
         </ul>
       </section>
@@ -35,10 +37,10 @@ export default function TermsPage() {
         <p className="text-sm leading-relaxed">
           오기·사실관계 정정 요청은{" "}
           <a
-            href="mailto:haimin.office@assembly.go.kr"
+            href={`mailto:${MEMBER.officeEmail}`}
             className="underline underline-offset-4"
           >
-            haimin.office@assembly.go.kr
+            {MEMBER.officeEmail}
           </a>
           로 접수합니다.
         </p>

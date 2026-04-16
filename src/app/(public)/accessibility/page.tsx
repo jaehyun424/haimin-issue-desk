@@ -1,3 +1,5 @@
+import { MEMBER } from "@/lib/constants/member";
+
 export const metadata = { title: "접근성 안내" };
 
 export default function AccessibilityPage() {
@@ -40,10 +42,10 @@ export default function AccessibilityPage() {
         <p className="text-sm leading-relaxed">
           접근성 관련 불편을 겪으신 경우{" "}
           <a
-            href="mailto:haimin.office@assembly.go.kr"
+            href={`mailto:${MEMBER.officeEmail}`}
             className="underline underline-offset-4"
           >
-            haimin.office@assembly.go.kr
+            {MEMBER.officeEmail}
           </a>
           로 알려 주시면 검토 후 개선합니다.
         </p>

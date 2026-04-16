@@ -1,3 +1,5 @@
+import { MEMBER } from "@/lib/constants/member";
+
 export const metadata = { title: "개인정보 처리방침" };
 
 export default function PrivacyPage() {
@@ -75,10 +77,10 @@ export default function PrivacyPage() {
         <p className="text-sm leading-relaxed">
           이해민 의원실 정책 비서관. 문의:{" "}
           <a
-            href="mailto:haimin.office@assembly.go.kr"
+            href={`mailto:${MEMBER.officeEmail}`}
             className="underline underline-offset-4"
           >
-            haimin.office@assembly.go.kr
+            {MEMBER.officeEmail}
           </a>
         </p>
       </section>

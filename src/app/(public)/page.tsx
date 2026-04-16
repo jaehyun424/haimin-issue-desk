@@ -134,7 +134,7 @@ export default async function HomePage() {
                   </p>
 
                   {/* 하단: 출처 + 검증일 */}
-                  <div className="mt-auto flex items-center justify-between pt-4 text-xs text-muted-foreground">
+                  <div className="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 pt-4 text-xs text-muted-foreground">
                     <span>
                       출처{" "}
                       <span className="font-semibold text-foreground">
@@ -143,9 +143,12 @@ export default async function HomePage() {
                       건
                     </span>
                     {b.lastVerifiedAt ? (
-                      <span className="tabular-nums">
-                        검증 {formatKoreanDate(b.lastVerifiedAt)}
-                      </span>
+                      <>
+                        <span aria-hidden>·</span>
+                        <span className="tabular-nums">
+                          검증 {formatKoreanDate(b.lastVerifiedAt)}
+                        </span>
+                      </>
                     ) : null}
                   </div>
                 </Link>

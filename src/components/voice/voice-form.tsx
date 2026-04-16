@@ -11,7 +11,6 @@ import {
   VOICE_TYPE_LABELS,
   type VOICE_TYPES,
 } from "@/lib/validation/voice";
-import { MEMBER } from "@/lib/constants/member";
 import { submitVoiceAction } from "@/app/(public)/voice/actions";
 import { TurnstileWidget } from "./turnstile-widget";
 
@@ -75,30 +74,6 @@ export function VoiceForm({
             </label>
           ))}
         </div>
-        <ul className="space-y-1 pl-0.5 text-xs text-muted-foreground">
-          <li>
-            개인 민원은{" "}
-            <a
-              href="https://epeople.go.kr"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="underline underline-offset-4"
-            >
-              국민신문고
-            </a>
-            를 이용해 주세요.
-          </li>
-          <li>
-            협업·인터뷰·자료 전달은 의원실 이메일{" "}
-            <a
-              href={`mailto:${MEMBER.officeEmail}`}
-              className="underline underline-offset-4"
-            >
-              {MEMBER.officeEmail}
-            </a>
-            로 연락해 주세요.
-          </li>
-        </ul>
       </fieldset>
 
       {/* 관련 분야 */}

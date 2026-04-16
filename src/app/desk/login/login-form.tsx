@@ -76,12 +76,6 @@ export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      {SHOW_DEMO ? (
-        <p className="rounded bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-800">
-          ⚠ 데모 모드: 시연용 계정이 자동 입력되어 있습니다. Production 환경에서는
-          이 배너와 자동 입력이 노출되지 않습니다.
-        </p>
-      ) : null}
       {error ? (
         <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {error}

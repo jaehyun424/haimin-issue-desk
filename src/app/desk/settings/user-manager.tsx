@@ -113,56 +113,68 @@ export function UserManager({
 
       {/* 모바일: 카드 */}
       <ul className="space-y-3 md:hidden">
-        {users.map((u) => (
-          <li key={u.id} className="card-line space-y-3 p-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0 flex-1">
-                <p className="font-medium text-foreground">{u.name}</p>
-                <p className="break-all font-mono text-xs text-muted-foreground">
-                  {u.email}
-                  {u.id === currentUserId ? (
-                    <span className="ml-1 text-[10px] uppercase tracking-wider text-primary">
-                      (나)
-                    </span>
-                  ) : null}
+        {users.map((u) => {
+          const isSelf = u.id === currentUserId;
+          return (
+            <li key={u.id} className="card-line space-y-3 p-4">
+              {/* 헤더: 이름 + 이메일 + 상태 배지 */}
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-foreground">
+                    {u.name}
+                    {isSelf ? (
+                      <span className="ml-1.5 rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary">
+                        나
+                      </span>
+                    ) : null}
+                  </p>
+                  <p className="break-all font-mono text-xs text-muted-foreground">
+                    {u.email}
+                  </p>
+                </div>
+                <span
+                  className={
+                    u.isActive
+                      ? "shrink-0 rounded bg-muted px-2 py-0.5 text-[11px] font-medium text-foreground"
+                      : "shrink-0 rounded bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
+                  }
+                >
+                  {u.isActive ? "활성" : "비활성"}
+                </span>
+              </div>
+
+              {/* 정보 블록 */}
+              <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">
+                <span className="text-muted-foreground">역할</span>
+                <span className="text-foreground">{ROLE_LABELS[u.role]}</span>
+                <span className="text-muted-foreground">마지막 로그인</span>
+                <span className="text-muted-foreground">
+                  {u.lastLoginAt ? formatKoreanDateTime(u.lastLoginAt) : "-"}
+                </span>
+              </div>
+
+              {/* 조작 블록 — 자기 카드엔 안내만, 다른 사용자 카드에만 액션 */}
+              {isSelf ? (
+                <p className="border-t border-border pt-3 text-[11px] text-muted-foreground">
+                  현재 사용 중인 계정입니다.
                 </p>
-              </div>
-              <span
-                className={
-                  u.isActive
-                    ? "rounded bg-muted px-2 py-0.5 text-[11px] font-medium text-foreground"
-                    : "rounded bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
-                }
-              >
-                {u.isActive ? "활성" : "비활성"}
-              </span>
-            </div>
-            <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">
-              <span className="text-muted-foreground">역할</span>
-              <span>
-                {canManage && u.id !== currentUserId ? (
-                  <RoleSelect id={u.id} role={u.role} />
-                ) : (
-                  ROLE_LABELS[u.role]
-                )}
-              </span>
-              <span className="text-muted-foreground">마지막 로그인</span>
-              <span className="text-muted-foreground">
-                {u.lastLoginAt ? formatKoreanDateTime(u.lastLoginAt) : "-"}
-              </span>
-            </div>
-            {canManage ? (
-              <div className="flex flex-wrap gap-2 border-t border-border pt-3">
-                <ActiveToggle
-                  id={u.id}
-                  isActive={u.isActive}
-                  disabled={u.id === currentUserId}
-                />
-                <ResetPassword id={u.id} />
-              </div>
-            ) : null}
-          </li>
-        ))}
+              ) : canManage ? (
+                <div className="space-y-3 border-t border-border pt-3">
+                  <div>
+                    <p className="mb-1.5 text-[11px] text-muted-foreground">
+                      역할 변경
+                    </p>
+                    <RoleSelect id={u.id} role={u.role} />
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <ActiveToggle id={u.id} isActive={u.isActive} />
+                    <ResetPassword id={u.id} />
+                  </div>
+                </div>
+              ) : null}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

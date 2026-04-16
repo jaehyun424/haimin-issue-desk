@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/lib/db";
 import { issueCategories, featureFlags, users } from "@/lib/db/schema";
 import { requireDeskSession } from "@/lib/auth/session";
-import { ROLE_LABELS } from "@/lib/constants/roles";
 import { getAllFlags } from "@/lib/feature-flags";
 import { defaultFlagSeeds } from "@/lib/constants/feature-flags";
 import { FlagToggle } from "./flag-toggle";
@@ -17,7 +16,7 @@ const FLAG_LABELS: Record<string, { label: string; hint: string }> = {
   },
   election_mode: {
     label: "발행 안전모드",
-    hint: "켜면 브리프 발행 시 검토자 승인 단계를 반드시 거쳐야 합니다.",
+    hint: "켜면 브리프 발행 시 검토 단계를 반드시 거쳐야 합니다.",
   },
   ai_enabled: {
     label: "AI 도우미 사용 여부",
@@ -133,10 +132,6 @@ export default async function DeskSettingsPage() {
           />
         </div>
       </section>
-
-      <p className="text-xs text-muted-foreground">
-        로그인: {session.user.email} · 역할: {ROLE_LABELS[session.user.role]}
-      </p>
     </div>
   );
 }

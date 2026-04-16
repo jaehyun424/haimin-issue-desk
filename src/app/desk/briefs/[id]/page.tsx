@@ -119,7 +119,7 @@ export default async function BriefDetailPage({ params }: Props) {
             · 본문 4섹션 구조: 이슈 개요 → 현재 상황 → 의원실 관련 활동 → 관련 법안·회의
           </li>
           <li>· 연결 출처 최소 1건 이상 ({count ?? 0}건 연결됨)</li>
-          <li>· 발행 전 검토자 확인 (발행 안전모드 켜짐 시 필수)</li>
+          <li>· 발행 전 의원실 검토 (발행 안전모드 켜짐 시 필수)</li>
         </ul>
       </Section>
     </div>

@@ -35,7 +35,7 @@ export function defaultFlagSeeds(): FlagSeed[] {
     {
       key: FLAG.ELECTION_MODE,
       enabled: parseBool(process.env.FEATURE_ELECTION_MODE_DEFAULT, true),
-      description: "발행 안전모드. 켜짐일 때 자동 발행 금지 및 검토자 승인 필수.",
+      description: "발행 안전모드. 켜짐일 때 자동 발행 금지 및 검토 단계 필수.",
     },
     {
       key: FLAG.AI_ENABLED,

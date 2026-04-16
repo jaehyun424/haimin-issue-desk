@@ -33,7 +33,7 @@ export function checkPublishable(input: PublishInputs): PublishCheck {
       ok: false,
       code: "must_review_first",
       message:
-        "발행 안전모드에서는 검토자 확인(검토 상태)을 거쳐야 발행할 수 있습니다.",
+        "발행 안전모드에서는 검토 단계를 거쳐야 발행할 수 있습니다.",
     };
   }
   return { ok: true };

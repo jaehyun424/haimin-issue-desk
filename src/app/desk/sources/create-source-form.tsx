@@ -47,8 +47,13 @@ export function CreateSourceForm() {
         <Input id="src-published" name="publishedAt" type="date" />
       </div>
       <div className="space-y-1">
-        <Label htmlFor="src-external">외부 ID</Label>
-        <Input id="src-external" name="externalId" maxLength={120} />
+        <Label htmlFor="src-external">원본 식별자</Label>
+        <Input
+          id="src-external"
+          name="externalId"
+          maxLength={120}
+          placeholder="의안번호·기사ID 등 (선택)"
+        />
       </div>
       <div className="space-y-1 sm:col-span-2">
         <Label htmlFor="src-body">내부 메모</Label>

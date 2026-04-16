@@ -62,7 +62,7 @@ export default async function DeskHome() {
     {
       label: "최근 7일 수집 소스",
       value: newSources,
-      hint: "자동 파이프라인 + 수기 입력 합계",
+      hint: "자동 수집 + 직접 등록 합계",
       href: "/desk/sources",
     },
     {
@@ -74,7 +74,7 @@ export default async function DeskHome() {
     {
       label: "발행 대기 브리프",
       value: readyBriefs,
-      hint: "검토자 승인 대기",
+      hint: "검토 단계 진행 중",
       href: "/desk/briefs?status=review",
     },
   ];

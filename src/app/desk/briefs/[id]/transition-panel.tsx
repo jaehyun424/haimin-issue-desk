@@ -41,7 +41,7 @@ export function BriefTransitionPanel({ id, currentStatus, sourceCount, role }: P
       to: "published",
       label: "발행",
       disabled: !canPublish || sourceCount === 0,
-      hint: sourceCount === 0 ? "출처 1건 이상 필요" : "검토자 권한이 없으면 비활성",
+      hint: sourceCount === 0 ? "출처 1건 이상 필요" : "발행 권한이 없으면 비활성",
       variant: "default",
     });
     transitions.push({

@@ -70,9 +70,9 @@ export default async function HomePage() {
         <p className="kicker">과학기술정보방송통신위원회</p>
         <h1 className="mt-4 max-w-3xl">이해민 의원실의 과방위 의정 브리프</h1>
         <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-muted-foreground">
-          국회 공식 데이터와 정부·유관기관 자료를 기반으로, 의원실 편집자가 작성하고
-          검토자가 승인한 현안 정리를 공개합니다. 마지막 검증 시각과 출처 링크를 모든
-          글에 함께 표기합니다.
+          국회 공식 데이터와 정부·유관기관 자료를 기반으로, 의원실이 작성하고
+          검토한 현안 정리를 공개합니다. 마지막 검증 시각과 출처 링크를 모든 글에 함께
+          표기합니다.
         </p>
         <div className="mt-6 flex flex-wrap gap-2">
           <Button asChild>
@@ -100,7 +100,7 @@ export default async function HomePage() {
           <div className="pt-6">
             <EmptyState
               title="아직 발행된 브리프가 없습니다"
-              description="편집자가 작성하고 검토자가 승인하면 이곳에 공개됩니다."
+              description="의원실이 작성하고 검토를 마친 뒤 이곳에 공개됩니다."
             />
           </div>
         ) : (
@@ -189,8 +189,7 @@ export default async function HomePage() {
           <div>
             <dt className="eyebrow">02. 검수 필수</dt>
             <dd className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              편집자가 초안을 쓰고 검토자가 승인한 글만 공개됩니다. AI 자동 발행은
-              하지 않습니다.
+              의원실 내부 검토를 거친 글만 공개합니다. AI 자동 발행은 하지 않습니다.
             </dd>
           </div>
           <div>

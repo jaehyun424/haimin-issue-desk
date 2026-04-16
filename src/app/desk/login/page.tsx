@@ -23,7 +23,7 @@ export default async function LoginPage({ searchParams }: Props) {
       <div className="flex flex-1 items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
           <div className="mb-8 text-center">
-            <p className="kicker">이슈 데스크</p>
+            <p className="kicker">관리 콘솔</p>
             <h1 className="mt-3 text-[1.75rem]">관리자 로그인</h1>
             <p className="mt-2 text-sm text-muted-foreground">
               이해민 의원실 실무자 전용. 공개 페이지와 별개의 내부 운영 콘솔입니다.

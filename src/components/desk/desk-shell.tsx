@@ -59,7 +59,7 @@ export function DeskShell({
         >
           {open ? <X className="h-4 w-4" aria-hidden /> : <Menu className="h-4 w-4" aria-hidden />}
         </button>
-        <span className="text-sm font-semibold text-foreground">이슈 데스크</span>
+        <span className="text-sm font-semibold text-foreground">관리 콘솔</span>
         <span className="w-9" aria-hidden />
       </div>
 
@@ -86,7 +86,7 @@ export function DeskShell({
               id="desk-mobile-drawer"
               role="dialog"
               aria-modal="true"
-              aria-label="이슈 데스크 메뉴"
+              aria-label="관리 콘솔 메뉴"
               className="fixed inset-y-0 left-0 z-50 max-w-[85vw] md:hidden"
             >
               <DeskSidebar
